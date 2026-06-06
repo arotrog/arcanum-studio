@@ -1093,9 +1093,185 @@
       .hero-sc-ln { animation: none; }
       @keyframes gshift { 0%, 100% { background-position: 0% 50%; } }
     }
+
+    /* ================================================
+       SCROLL PROGRESS BAR
+    ================================================ */
+    #scroll-progress {
+      position: fixed;
+      top: 0; left: 0;
+      width: 0%;
+      height: 2.5px;
+      background: linear-gradient(90deg, var(--indigo-deep), var(--indigo), #a78bfa);
+      z-index: 10001;
+      transform-origin: left;
+      transition: width 0.05s linear;
+      pointer-events: none;
+    }
+    #scroll-progress::after {
+      content: '';
+      position: absolute;
+      right: 0; top: 50%;
+      transform: translateY(-50%);
+      width: 6px; height: 6px;
+      background: var(--indigo);
+      border-radius: 50%;
+      box-shadow: 0 0 8px 2px rgba(123,118,211,.7);
+    }
+
+    /* ================================================
+       PAGE TRANSITION OVERLAY
+    ================================================ */
+    #page-transition {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      pointer-events: none;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+    }
+    .pt-strip {
+      background: var(--dark-2);
+      transform: scaleY(0);
+      transform-origin: top;
+    }
+
+    /* ================================================
+       3D CARD TILT — shimmer layer
+    ================================================ */
+    .pf-card {
+      transform-style: preserve-3d;
+      perspective: 800px;
+    }
+    .card-shimmer {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s;
+      mix-blend-mode: overlay;
+      background: radial-gradient(circle at 50% 50%,
+        rgba(255,255,255,.35) 0%,
+        rgba(255,255,255,0) 70%);
+    }
+    .pf-card:hover .card-shimmer { opacity: 1; }
+
+    /* ================================================
+       MAGNETIC BUTTON
+    ================================================ */
+    .mag-btn {
+      transition: transform .4s cubic-bezier(0.23,1,0.32,1),
+                  background .3s var(--ease-out);
+      will-change: transform;
+    }
+
+    /* ================================================
+       SPLIT TEXT letters
+    ================================================ */
+    .split-letter {
+      display: inline-block;
+      will-change: transform, opacity;
+    }
+
+    /* ================================================
+       STAT COUNTER
+    ================================================ */
+    .stat-n[data-counted] { opacity: 1; }
+
+    /* ================================================
+       SMOOTH SCROLL INDICATOR (hero)
+    ================================================ */
+    @keyframes scLine {
+      0%   { transform: scaleY(0); transform-origin: top; opacity: 1; }
+      50%  { transform: scaleY(1); transform-origin: top; opacity: 1; }
+      51%  { transform: scaleY(1); transform-origin: bottom; }
+      100% { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
+    }
+
+    /* ================================================
+       GLITCH on logo hover
+    ================================================ */
+    .hdr-logo {
+      position: relative;
+    }
+    @keyframes glitchClip1 {
+      0%,100% { clip-path: inset(0 0 95% 0); transform: translate(-2px,0); }
+      20%      { clip-path: inset(30% 0 50% 0); transform: translate(2px,0); }
+      40%      { clip-path: inset(60% 0 20% 0); transform: translate(-1px,0); }
+      60%      { clip-path: inset(10% 0 75% 0); transform: translate(3px,0); }
+      80%      { clip-path: inset(80% 0 5%  0); transform: translate(-2px,0); }
+    }
+    @keyframes glitchClip2 {
+      0%,100% { clip-path: inset(80% 0 0 0); transform: translate(2px,0); }
+      20%      { clip-path: inset(10% 0 60% 0); transform: translate(-3px,0); }
+      40%      { clip-path: inset(50% 0 30% 0); transform: translate(1px,0); }
+      60%      { clip-path: inset(5%  0 85% 0); transform: translate(-2px,0); }
+      80%      { clip-path: inset(70% 0 10% 0); transform: translate(2px,0); }
+    }
+    .hdr-logo::before,
+    .hdr-logo::after {
+      content: attr(data-text);
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+      letter-spacing: inherit;
+      font-weight: inherit;
+    }
+    .hdr-logo::before { color: var(--indigo); }
+    .hdr-logo::after  { color: #ff6b9d; }
+    .hdr-logo.glitch::before {
+      opacity: .85;
+      animation: glitchClip1 .45s steps(2) forwards;
+    }
+    .hdr-logo.glitch::after {
+      opacity: .7;
+      animation: glitchClip2 .45s steps(2) forwards;
+    }
+
+    /* ================================================
+       NOISE TEXTURE OVERLAY on hero
+    ================================================ */
+    #hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      background-size: 200px;
+      pointer-events: none;
+      z-index: 1;
+      opacity: .4;
+    }
+
+    /* ================================================
+       SECTION LABEL — animated underline
+    ================================================ */
+    .sec-lbl::after {
+      content: '';
+      display: block;
+      width: 0;
+      height: 1px;
+      background: var(--indigo-deep);
+      margin-top: .4rem;
+      transition: width .8s var(--ease-out);
+    }
+    .sec-lbl.revealed::after { width: 2rem; }
   </style>
 </head>
 <body class="loading">
+
+<!-- ===== SCROLL PROGRESS ===== -->
+<div id="scroll-progress"></div>
+
+<!-- ===== PAGE TRANSITION ===== -->
+<div id="page-transition" aria-hidden="true">
+  <div class="pt-strip"></div>
+  <div class="pt-strip"></div>
+  <div class="pt-strip"></div>
+  <div class="pt-strip"></div>
+  <div class="pt-strip"></div>
+</div>
 
 <!-- ===== PRELOADER ===== -->
 <div id="preloader">
@@ -1113,7 +1289,7 @@
 
 <!-- ===== HEADER ===== -->
 <header id="hdr">
-  <a href="#" class="hdr-logo">АРКАНУМ</a>
+  <a href="#" class="hdr-logo" data-text="АРКАНУМ">АРКАНУМ</a>
 
   <nav>
     <ul class="hdr-nav">
@@ -1399,7 +1575,7 @@
                   data-ru-ph="Расскажите о вашем проекте..."
                   data-en-ph="Tell us about your project..."></textarea>
       </div>
-      <button type="submit" class="fsub"
+      <button type="submit" class="fsub mag-btn"
               data-ru="Отправить заявку →"
               data-en="Send request →">Отправить заявку →</button>
     </form>
@@ -1498,6 +1674,7 @@ function renderCards() {
       <div class="card-bg" style="background:${p.bg}"></div>
       <div class="card-vid" style="background:${p.sim};background-size:300% 300%;"></div>
       <div class="card-ov"></div>
+      <div class="card-shimmer"></div>
       <div class="card-info">
         <div class="card-tags"><span class="card-tag">${NICHE_LABELS[p.niche][activeLang]}</span></div>
         <div class="card-title">${activeLang === 'ru' ? p.ru : p.en}</div>
@@ -1792,6 +1969,9 @@ function startAnimations() {
   setTimeout(() => {
     if (window._ghostStartPeek) window._ghostStartPeek();
   }, 1300);
+
+  /* Scramble hero eyebrow */
+  if (window._scrambleHero) window._scrambleHero();
 }
 
 /* ================================================
@@ -1823,14 +2003,8 @@ document.querySelectorAll('.lang-btn').forEach(btn => {
 });
 
 /* ================================================
-   SMOOTH SCROLL NAV
+   SMOOTH SCROLL NAV — handled below with page transition
 ================================================ */
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-  a.addEventListener('click', e => {
-    const t = document.querySelector(a.getAttribute('href'));
-    if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); }
-  });
-});
 
 /* ================================================
    MOBILE NAV
@@ -2508,11 +2682,425 @@ renderCards();
   window.addEventListener('scroll', () => {
     if (!video) return;
     const progress = Math.min(window.scrollY / window.innerHeight, 1);
-    // Slow down the video as user scrolls — parallax feel, no abrupt cut
     video.style.transform = `scale(1.08) translateY(${progress * 12}%)`;
   }, { passive: true });
 
 })();
+
+/* ================================================
+   SCROLL PROGRESS BAR
+================================================ */
+(function() {
+  const bar = document.getElementById('scroll-progress');
+  if (!bar) return;
+  function updateBar() {
+    const max  = document.documentElement.scrollHeight - window.innerHeight;
+    const pct  = max > 0 ? (window.scrollY / max) * 100 : 0;
+    bar.style.width = pct.toFixed(2) + '%';
+  }
+  window.addEventListener('scroll', updateBar, { passive: true });
+  updateBar();
+})();
+
+/* ================================================
+   PAGE TRANSITION — strips flash-reveal on nav clicks
+================================================ */
+(function() {
+  const strips = document.querySelectorAll('.pt-strip');
+  if (!strips.length) return;
+
+  function runTransition(cb) {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) { if (cb) cb(); return; }
+
+    // Sweep down
+    strips.forEach((s, i) => {
+      s.style.transformOrigin = 'top';
+      s.style.transition      = `transform 0.45s cubic-bezier(0.76,0,0.24,1) ${i * 0.04}s`;
+      s.style.transform       = 'scaleY(1)';
+    });
+    setTimeout(() => {
+      if (cb) cb();
+      // Sweep up
+      strips.forEach((s, i) => {
+        s.style.transformOrigin = 'bottom';
+        s.style.transition      = `transform 0.45s cubic-bezier(0.76,0,0.24,1) ${(4-i) * 0.04}s`;
+        s.style.transform       = 'scaleY(0)';
+      });
+    }, 500);
+  }
+
+  window._pageTransition = runTransition;
+})();
+
+/* ================================================
+   TEXT SCRAMBLE — hero heading reveal
+================================================ */
+(function() {
+  const CHARS = 'АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯabcdefghijklmnopqrstuvwxyz0123456789@#$%&';
+
+  function scrambleText(el, finalText, duration, delay) {
+    const frames = Math.round(duration / 16);
+    let frame = 0;
+    setTimeout(() => {
+      const id = setInterval(() => {
+        const progress = frame / frames;
+        let result = '';
+        for (let i = 0; i < finalText.length; i++) {
+          if (finalText[i] === ' ') { result += ' '; continue; }
+          if (i < Math.floor(progress * finalText.length)) {
+            result += finalText[i];
+          } else {
+            result += CHARS[Math.floor(Math.random() * CHARS.length)];
+          }
+        }
+        el.textContent = result;
+        frame++;
+        if (frame > frames) {
+          clearInterval(id);
+          el.textContent = finalText;
+        }
+      }, 16);
+    }, delay);
+  }
+
+  window._scrambleHero = function() {
+    const eye = document.querySelector('.hero-eye');
+    if (eye) {
+      const orig = eye.textContent.trim();
+      scrambleText(eye, orig, 600, 200);
+    }
+  };
+})();
+
+/* ================================================
+   SPLIT TEXT — per-letter animations on sec-h2
+================================================ */
+(function() {
+  function splitEl(el) {
+    const text  = el.innerText;
+    el.innerHTML = '';
+    el.setAttribute('aria-label', text);
+    text.split('').forEach((ch, i) => {
+      const span = document.createElement('span');
+      span.className     = 'split-letter';
+      span.textContent   = ch === ' ' ? ' ' : ch;
+      span.style.opacity = '0';
+      span.style.transform = 'translateY(32px) rotate(4deg)';
+      span.style.transitionDelay = (i * 0.028) + 's';
+      span.style.transition = 'opacity 0.55s cubic-bezier(0.16,1,0.3,1), transform 0.55s cubic-bezier(0.16,1,0.3,1)';
+      el.appendChild(span);
+    });
+  }
+
+  function revealEl(el) {
+    el.querySelectorAll('.split-letter').forEach(s => {
+      s.style.opacity   = '1';
+      s.style.transform = 'none';
+    });
+  }
+
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduced) return;
+
+  const targets = document.querySelectorAll('.sec-h2, .pf-title, .ct-h2');
+  targets.forEach(el => {
+    // Save children (some h2s have em tags) — only split text nodes
+    const hasChildren = el.querySelector('em, span, br');
+    if (hasChildren) {
+      // Skip complex markup, use simpler fade-in via GSAP
+      return;
+    }
+    splitEl(el);
+
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { revealEl(el); obs.disconnect(); }
+      });
+    }, { threshold: 0.3 });
+    obs.observe(el);
+  });
+})();
+
+/* ================================================
+   SEC-LBL underline reveal
+================================================ */
+(function() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('revealed');
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.sec-lbl').forEach(el => obs.observe(el));
+})();
+
+/* ================================================
+   ANIMATED COUNTERS — stat numbers
+================================================ */
+(function() {
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.querySelectorAll('.stat-n').forEach(el => {
+    const raw    = el.textContent.replace(/[^\d]/g, '');
+    const target = parseInt(raw, 10);
+    if (isNaN(target)) return;
+
+    const sup    = el.querySelector('sup');
+    const suffix = sup ? sup.outerHTML : '';
+    const prefix = '';
+
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        obs.unobserve(el);
+
+        if (reduced) {
+          el.innerHTML = target + suffix;
+          return;
+        }
+
+        const duration = 1400;
+        const start    = performance.now();
+        function tick(now) {
+          const elapsed  = now - start;
+          const progress = Math.min(elapsed / duration, 1);
+          // easeOutExpo
+          const eased    = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+          const current  = Math.round(eased * target);
+          el.innerHTML   = current + suffix;
+          if (progress < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      });
+    }, { threshold: 0.6 });
+
+    obs.observe(el);
+  });
+})();
+
+/* ================================================
+   3D CARD TILT + SHIMMER (portfolio cards)
+================================================ */
+(function() {
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isMobile = window.matchMedia('(max-width: 768px)').matches;
+  if (reduced || isMobile) return;
+
+  function applyTilt(card) {
+    const shimmer = card.querySelector('.card-shimmer');
+
+    card.addEventListener('mousemove', e => {
+      const rc  = card.getBoundingClientRect();
+      const x   = (e.clientX - rc.left) / rc.width  - 0.5;   // -0.5 … +0.5
+      const y   = (e.clientY - rc.top)  / rc.height - 0.5;
+      const rotX = y * -16;
+      const rotY = x *  16;
+
+      card.style.transform  = `perspective(800px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale3d(1.03,1.03,1.03)`;
+      card.style.transition = 'transform 0.08s ease';
+      card.style.zIndex     = '10';
+
+      if (shimmer) {
+        const px = (x + 0.5) * 100;
+        const py = (y + 0.5) * 100;
+        shimmer.style.background = `radial-gradient(circle at ${px}% ${py}%, rgba(255,255,255,.28) 0%, rgba(255,255,255,0) 65%)`;
+      }
+    });
+
+    card.addEventListener('mouseleave', () => {
+      card.style.transition = 'transform 0.55s cubic-bezier(0.23,1,0.32,1)';
+      card.style.transform  = 'perspective(800px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)';
+      card.style.zIndex     = '';
+      if (shimmer) shimmer.style.background = '';
+    });
+  }
+
+  // Apply to existing and future cards
+  function bindTilt() {
+    document.querySelectorAll('.pf-card:not([data-tilt])').forEach(card => {
+      card.setAttribute('data-tilt', '1');
+      applyTilt(card);
+    });
+  }
+
+  // Hook into renderCards
+  const origRender = window.renderCards;
+  if (typeof origRender === 'function') {
+    // MutationObserver approach — fires after DOM changes
+    const pfTrack = document.getElementById('pfTrack');
+    if (pfTrack) {
+      const mo = new MutationObserver(() => setTimeout(bindTilt, 50));
+      mo.observe(pfTrack, { childList: true });
+    }
+  }
+  // Also run after short delay for initial render
+  setTimeout(bindTilt, 400);
+
+  // Re-expose for addCursorToCards hook
+  const origAdd = window.addCursorToCards;
+  window.addCursorToCards = function() {
+    if (origAdd) origAdd();
+    bindTilt();
+  };
+})();
+
+/* ================================================
+   MAGNETIC BUTTONS
+================================================ */
+(function() {
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isMobile = window.matchMedia('(max-width: 768px)').matches;
+  if (reduced || isMobile) return;
+
+  document.querySelectorAll('.mag-btn').forEach(btn => {
+    btn.addEventListener('mousemove', e => {
+      const rc  = btn.getBoundingClientRect();
+      const cx  = rc.left + rc.width  / 2;
+      const cy  = rc.top  + rc.height / 2;
+      const dx  = (e.clientX - cx) * 0.35;
+      const dy  = (e.clientY - cy) * 0.35;
+      btn.style.transform = `translate(${dx}px, ${dy}px)`;
+    });
+    btn.addEventListener('mouseleave', () => {
+      btn.style.transform = 'translate(0,0)';
+    });
+  });
+})();
+
+/* ================================================
+   LOGO GLITCH on hover
+================================================ */
+(function() {
+  const logo = document.querySelector('.hdr-logo');
+  if (!logo) return;
+  logo.addEventListener('mouseenter', () => {
+    logo.classList.add('glitch');
+    setTimeout(() => logo.classList.remove('glitch'), 500);
+  });
+})();
+
+/* ================================================
+   LENIS-STYLE SMOOTH SCROLL (inertia lerp)
+================================================ */
+(function() {
+  const reduced  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isMobile = window.matchMedia('(max-width: 768px)').matches;
+  if (reduced || isMobile) return;
+
+  let current = window.scrollY;
+  let target  = window.scrollY;
+  let running = false;
+
+  const maxScroll = () => document.documentElement.scrollHeight - window.innerHeight;
+  const clamp     = v => Math.max(0, Math.min(maxScroll(), v));
+
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
+  function smoothLoop() {
+    current = lerp(current, target, 0.09);
+    window.scrollTo(0, current);
+    if (Math.abs(target - current) > 0.5) {
+      requestAnimationFrame(smoothLoop);
+    } else {
+      current = target;
+      window.scrollTo(0, current);
+      running = false;
+    }
+  }
+
+  function kick() {
+    if (!running) { running = true; requestAnimationFrame(smoothLoop); }
+  }
+
+  window.addEventListener('wheel', e => {
+    e.preventDefault();
+    target = clamp(target + e.deltaY * 1.1);
+    kick();
+  }, { passive: false });
+
+  window.addEventListener('keydown', e => {
+    const steps = {
+      ArrowDown: 120, ArrowUp: -120,
+      PageDown: window.innerHeight * 0.85, PageUp: -window.innerHeight * 0.85,
+      Home: -maxScroll(), End: maxScroll()
+    };
+    if (steps[e.key] !== undefined) {
+      e.preventDefault();
+      target = clamp(target + steps[e.key]);
+      kick();
+    }
+  });
+
+  // Expose for nav links
+  window._smoothScrollTo = function(y) {
+    target = clamp(y);
+    kick();
+  };
+})();
+
+/* ================================================
+   ENHANCED HERO MOUSE PARALLAX
+   (blobs + heading depth layers)
+================================================ */
+(function() {
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduced) return;
+
+  const hero   = document.getElementById('hero');
+  const h1     = document.querySelector('.hero-h1');
+  const eye    = document.querySelector('.hero-eye');
+  const foot   = document.querySelector('.hero-foot');
+  if (!hero) return;
+
+  let mx = 0, my = 0;
+  let cx = 0, cy = 0;
+
+  hero.addEventListener('mousemove', e => {
+    const rc = hero.getBoundingClientRect();
+    mx = ((e.clientX - rc.left) / rc.width  - 0.5) * 2;   // -1 … +1
+    my = ((e.clientY - rc.top)  / rc.height - 0.5) * 2;
+  });
+
+  hero.addEventListener('mouseleave', () => { mx = 0; my = 0; });
+
+  (function tick() {
+    cx += (mx - cx) * 0.06;
+    cy += (my - cy) * 0.06;
+
+    if (h1)   h1.style.transform   = `translate(${cx * 12}px, ${cy * 8}px)`;
+    if (eye)  eye.style.transform  = `translate(${cx * 6}px,  ${cy * 4}px)`;
+    if (foot) foot.style.transform = `translate(${cx * -5}px, ${cy * -3}px)`;
+
+    requestAnimationFrame(tick);
+  })();
+})();
+
+/* ================================================
+   SCROLL PROGRESS — sync with custom scroll target
+================================================ */
+
+/* ================================================
+   NAV SMOOTH SCROLL with page transition
+================================================ */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const t = document.querySelector(a.getAttribute('href'));
+    if (!t) return;
+    e.preventDefault();
+
+    const scrollTo = () => {
+      const y = t.getBoundingClientRect().top + window.scrollY;
+      if (window._smoothScrollTo) window._smoothScrollTo(y);
+      else t.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    if (window._pageTransition) window._pageTransition(scrollTo);
+    else scrollTo();
+  });
+});
 </script>
 </body>
 </html>
