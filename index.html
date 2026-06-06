@@ -605,9 +605,29 @@
       white-space: nowrap;
     }
 
-    /* Hide on smaller screens */
-    @media (max-width: 1100px) { .hero-gallery { right: 3%; width: 190px; height: 260px; } }
-    @media (max-width: 900px)  { .hero-gallery { display: none; } }
+    /* Responsive gallery sizing — step-down then hide */
+    @media (max-width: 1400px) { .hero-gallery { right: 3%;  width: 196px; height: 268px; } }
+    @media (max-width: 1200px) { .hero-gallery { right: 2%;  width: 170px; height: 234px; } }
+    /* Hide gallery at the same breakpoint as ghost to prevent any overlap */
+    @media (max-width: 1024px) { .hero-gallery { display: none; } }
+
+    /* Constrain hero text on wide screens to leave room for gallery */
+    @media (min-width: 1025px) {
+      #hero {
+        /* Extra right padding reserves space for the gallery column */
+        padding-right: calc(3rem + 260px);
+      }
+      .hero-foot {
+        /* foot still spans to the right edge */
+        right: 3rem;
+      }
+    }
+    @media (min-width: 1201px) {
+      #hero { padding-right: calc(3rem + 290px); }
+    }
+    @media (min-width: 1401px) {
+      #hero { padding-right: calc(3rem + 310px); }
+    }
 
     /* Text protection layer behind heading */
     .hero-text-guard {
