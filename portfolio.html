@@ -177,9 +177,27 @@
     /* ── Empty state ── */
     .pf-empty-grid {
       grid-column: 1/-1; text-align: center;
-      padding: 5rem 0;
-      font-family: var(--font-h); font-size: 1rem;
-      letter-spacing: .1em; color: rgba(200,195,255,.25);
+      padding: 5rem 2rem;
+      display: flex; flex-direction: column; align-items: center; gap: 1.5rem;
+    }
+    .empty-icon { font-size: 2.5rem; opacity: .4; }
+    .empty-msg {
+      font-family: var(--font-h); font-size: .9rem;
+      letter-spacing: .05em; color: rgba(200,195,255,.35);
+      line-height: 1.5;
+    }
+    .empty-switch-btn {
+      padding: .7rem 1.75rem; border-radius: 100px;
+      border: 1px solid rgba(200,195,255,.3);
+      background: transparent;
+      color: var(--indigo);
+      font-family: var(--font-h); font-size: .75rem; font-weight: 700;
+      letter-spacing: .06em;
+      cursor: none;
+      transition: background .25s, color .25s, border-color .25s;
+    }
+    .empty-switch-btn:hover {
+      background: var(--indigo); color: var(--dark-2); border-color: var(--indigo);
     }
 
     /* ── Lightbox ── */
@@ -426,6 +444,66 @@ let activeNiche = 'all';
 let filteredItems = [];
 let lbIdx = 0;
 
+/* ── Smart empty state ── */
+const TEAM_NAMES = {
+  ru: { alena: 'Алёны', nikita: 'Никиты', alena_acc: 'Алёну', nikita_acc: 'Никиту' },
+  en: { alena: "Alena's", nikita: "Nikita's", alena_acc: 'Alena', nikita_acc: 'Nikita' },
+};
+
+function buildEmptyState() {
+  const lang  = activeLang;
+  const names = TEAM_NAMES[lang] || TEAM_NAMES.ru;
+
+  // If filtered by a specific team — check if OTHER team has works in this niche
+  if (activeTeam !== 'all') {
+    const otherTeam     = activeTeam === 'alena' ? 'nikita' : 'alena';
+    const otherHasItems = PORTFOLIO.some(p =>
+      p.author === otherTeam &&
+      (activeNiche === 'all' || p.niche === activeNiche)
+    );
+
+    const currentName = names[activeTeam];
+    const otherAcc    = names[otherTeam + '_acc'];
+
+    if (otherHasItems) {
+      return `
+        <div class="pf-empty-grid">
+          <div class="empty-icon">🎨</div>
+          <p class="empty-msg">${
+            lang === 'ru'
+              ? `У ${currentName} пока нет работ в этой категории`
+              : `${currentName} doesn't have works in this category yet`
+          }</p>
+          <button class="empty-switch-btn">${
+            lang === 'ru'
+              ? `Посмотреть работы ${otherAcc} →`
+              : `View ${otherAcc}'s works →`
+          }</button>
+        </div>`;
+    }
+  }
+
+  // Generic empty (e.g. "all" filter, truly nothing)
+  return `
+    <div class="pf-empty-grid">
+      <div class="empty-icon">🔍</div>
+      <p class="empty-msg">${lang === 'ru' ? 'Работ не найдено' : 'No works found'}</p>
+    </div>`;
+}
+
+function switchToOtherDesigner() {
+  const otherTeam = activeTeam === 'alena' ? 'nikita' : 'alena';
+  activeTeam = otherTeam;
+
+  // Sync filter buttons
+  document.querySelectorAll('#teamFilters .fbtn').forEach(b => {
+    const match = b.dataset.filter === otherTeam;
+    b.classList.toggle('on', match);
+  });
+
+  renderGrid();
+}
+
 /* ── Render grid ── */
 function renderGrid() {
   const grid = document.getElementById('pfGrid');
@@ -440,7 +518,10 @@ function renderGrid() {
     : `${filteredItems.length} works`;
 
   if (!filteredItems.length) {
-    grid.innerHTML = `<div class="pf-empty-grid">${activeLang === 'ru' ? 'Работ не найдено' : 'No works found'}</div>`;
+    grid.innerHTML = buildEmptyState();
+    // bind button after injecting HTML
+    const btn = grid.querySelector('.empty-switch-btn');
+    if (btn) btn.addEventListener('click', () => switchToOtherDesigner());
     return;
   }
 

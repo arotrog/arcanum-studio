@@ -112,6 +112,10 @@
     body.cur-on-dark.ch-view #cur-label { color: var(--dark); }
     body.cur-on-dark.ch-svc  #cur-ring  { background: var(--indigo); border-color: var(--indigo); }
 
+    /* Modal open — cursor flips to light (dark bg behind overlay) */
+    body.modal-open #cur-dot  { background: var(--oat); mix-blend-mode: screen; }
+    body.modal-open #cur-ring { border-color: rgba(255,240,225,.7); }
+
     /* Links — small filled dot */
     body.ch-link #cur-ring {
       width: 26px; height: 26px;
@@ -1995,8 +1999,22 @@ document.querySelectorAll('.niche-btn').forEach(btn => {
     wrap.scrollLeft = tsl + (ts - e.touches[0].pageX) * 1.4;
   }, { passive: true });
 
-  /* ── Mouse wheel → horizontal scroll (intercept before global smooth scroll) ── */
+  /* ── Mouse wheel → horizontal scroll
+     Only activates after user intentionally hovers 400ms.
+     Before that, wheel bubbles to global page scroll normally. ── */
+  let wheelReady = false;
+  let wheelTimer = null;
+
+  wrap.addEventListener('mouseenter', () => {
+    wheelTimer = setTimeout(() => { wheelReady = true; }, 400);
+  });
+  wrap.addEventListener('mouseleave', () => {
+    clearTimeout(wheelTimer);
+    wheelReady = false;
+  });
+
   wrap.addEventListener('wheel', e => {
+    if (!wheelReady) return; // not hovering long enough → let page scroll
     e.preventDefault();
     e.stopPropagation();
     const delta = Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
@@ -2318,11 +2336,13 @@ function closeMobNav() {
 
   function openModal() {
     modal.classList.add('open');
+    document.body.classList.add('modal-open');
     document.body.style.overflow = 'hidden';
     modal.querySelector('.pm-box').scrollTop = 0;
   }
   function closeModal() {
     modal.classList.remove('open');
+    document.body.classList.remove('modal-open');
     document.body.style.overflow = '';
   }
 
