@@ -292,6 +292,32 @@
       background: var(--oat);
     }
 
+    /* Two-column layout when gallery is visible */
+    @media (min-width: 1025px) {
+      #hero {
+        flex-direction: row;
+        align-items: center;
+        gap: 2rem;
+        /* top/bottom padding so hero-foot (absolute) still looks good */
+        padding-top: 7rem;
+        padding-bottom: 7rem;
+      }
+    }
+
+    /* Hero text content — left column */
+    .hero-content {
+      display: contents; /* transparent by default (single col) */
+    }
+    @media (min-width: 1025px) {
+      .hero-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        flex: 1 1 0;
+        min-width: 0;
+      }
+    }
+
     /* Video background */
     .hero-video-wrap {
       position: absolute;
@@ -334,7 +360,8 @@
     }
 
     /* All hero content above video */
-    .hero-eye, .hero-h1, .hero-foot { position: relative; z-index: 2; }
+    .hero-content, .hero-eye, .hero-h1, .hero-foot { position: relative; z-index: 2; }
+    .hero-gallery { z-index: 2; }
 
     /* ================================================
        GHOST — peeks from М, then docks bottom-right
@@ -383,6 +410,21 @@
     @keyframes ghostBob {
       0%, 100% { transform: translateY(0px); }
       50%      { transform: translateY(-5px); }
+    }
+
+    /* Gallery right-edge fade — blends into hero bg */
+    .hero-gallery::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to right,
+        transparent 60%,
+        rgba(255,240,225,.55) 100%
+      );
+      pointer-events: none;
+      z-index: 10;
+      border-radius: 18px;
     }
 
     /* ---- Thought cloud bubble ---- */
@@ -450,23 +492,27 @@
     }
 
     /* ================================================
-       HERO GALLERY — stacked portfolio preview (right)
+       HERO GALLERY — stacked portfolio preview (right column)
     ================================================ */
     .hero-gallery {
-      position: absolute;
-      right: 6%;
-      top: 50%;
-      transform: translateY(-50%);
+      /* Default: hidden (mobile) */
+      display: none;
       z-index: 3;
-      width: 220px;
-      height: 300px;
       pointer-events: auto;
+      position: relative;      /* in-flow flex item */
+      flex-shrink: 0;
+      /* Width adapts to viewport, height follows aspect-ratio on .hg-stack */
+      width: clamp(200px, 26vw, 400px);
+    }
+
+    @media (min-width: 1025px) {
+      .hero-gallery { display: block; }
     }
 
     .hg-stack {
       position: relative;
       width: 100%;
-      height: 100%;
+      aspect-ratio: 3 / 4.2;  /* cards are portrait */
     }
 
     .hg-card {
@@ -605,29 +651,8 @@
       white-space: nowrap;
     }
 
-    /* Responsive gallery sizing — step-down then hide */
-    @media (max-width: 1400px) { .hero-gallery { right: 3%;  width: 196px; height: 268px; } }
-    @media (max-width: 1200px) { .hero-gallery { right: 2%;  width: 170px; height: 234px; } }
-    /* Hide gallery at the same breakpoint as ghost to prevent any overlap */
-    @media (max-width: 1024px) { .hero-gallery { display: none; } }
-
-    /* Constrain hero text on wide screens to leave room for gallery */
-    @media (min-width: 1025px) {
-      #hero {
-        /* Extra right padding reserves space for the gallery column */
-        padding-right: calc(3rem + 260px);
-      }
-      .hero-foot {
-        /* foot still spans to the right edge */
-        right: 3rem;
-      }
-    }
-    @media (min-width: 1201px) {
-      #hero { padding-right: calc(3rem + 290px); }
-    }
-    @media (min-width: 1401px) {
-      #hero { padding-right: calc(3rem + 310px); }
-    }
+    /* Gallery width step-down — clamp() handles the rest */
+    @media (max-width: 1200px) { .hero-gallery { width: clamp(180px, 24vw, 280px); } }
 
     /* Text protection layer behind heading */
     .hero-text-guard {
@@ -1534,16 +1559,19 @@
   <div class="blob blob-2" data-parallax="-55"></div>
 
 
-  <p class="hero-eye"
-     data-ru="Дизайн-студия · Арканум"
-     data-en="Design Studio · Arcanum">Дизайн-студия · Арканум</p>
+  <!-- Left text column -->
+  <div class="hero-content">
+    <p class="hero-eye"
+       data-ru="Дизайн-студия · Арканум"
+       data-en="Design Studio · Arcanum">Дизайн-студия · Арканум</p>
 
-  <h1 class="hero-h1">
-    <span class="h1-line"><span class="h1-inner">АРК<em>АН</em>УМ</span></span>
-    <span class="h1-line"><span class="h1-inner h1-sub" data-ru="СТУДИЯ" data-en="STUDIO">СТУДИЯ</span></span>
-  </h1>
+    <h1 class="hero-h1">
+      <span class="h1-line"><span class="h1-inner">АРК<em>АН</em>УМ</span></span>
+      <span class="h1-line"><span class="h1-inner h1-sub" data-ru="СТУДИЯ" data-en="STUDIO">СТУДИЯ</span></span>
+    </h1>
+  </div>
 
-  <!-- Portfolio gallery preview (right side) -->
+  <!-- Right gallery column -->
   <div class="hero-gallery" id="heroGallery" aria-hidden="true">
     <div class="hg-label" data-ru="Портфолио" data-en="Portfolio">Портфолио</div>
     <div class="hg-stack" id="hgStack"></div>
@@ -3292,20 +3320,24 @@ renderCards();
     return out;
   }
 
-  // Stack positions: [front … back]
-  // MCP Magic pattern: front centered, back cards offset + rotated
-  const POSITIONS = [
-    { x:  0,   y:  0,   rot:  0,   scale: 1,    z: 3 },   // front
-    { x: -18,  y: 12,   rot: -6,   scale: .96,  z: 2 },   // mid
-    { x: -34,  y: 22,   rot: -12,  scale: .92,  z: 1 },   // back
-  ];
-
-  // Hover: spread cards fan-style
-  const SPREAD = [
-    { x:  52,  y: -18,  rot:  8,   scale: 1.04, z: 3 },
-    { x:  0,   y:  8,   rot:  0,   scale: 1,    z: 2 },
-    { x: -52,  y: 18,   rot: -8,   scale: .96,  z: 1 },
-  ];
+  // Stack + spread positions scale with card width
+  function getPositions() {
+    const w = stack.offsetWidth || 240;
+    const u = w * 0.09;   // ~9% of card width for stack offset
+    const s = w * 0.28;   // ~28% of card width for spread
+    return {
+      stack: [
+        { x:  0,     y:  0,      rot:  0,   scale: 1,    z: 3 },
+        { x: -u,     y:  u*.7,   rot: -6,   scale: .96,  z: 2 },
+        { x: -u*1.9, y:  u*1.3,  rot: -12,  scale: .92,  z: 1 },
+      ],
+      spread: [
+        { x:  s,   y: -u,   rot:  9,   scale: 1.04, z: 3 },
+        { x:  0,   y:  u*.5, rot:  0,   scale: 1,    z: 2 },
+        { x: -s,   y:  u,   rot: -9,   scale: .96,  z: 1 },
+      ],
+    };
+  }
 
   let cards    = [];
   let items    = [];
@@ -3324,7 +3356,6 @@ renderCards();
   function buildCard(item, idx) {
     const el = document.createElement('div');
     el.className = 'hg-card';
-
     el.innerHTML = `
       <div class="hg-bg" style="background:${item.sim};background-size:300% 300%;"></div>
       <div class="hg-ov"></div>
@@ -3334,8 +3365,7 @@ renderCards();
         <div class="hg-title">${item.ru}</div>
         <div class="hg-author">${item.aName}</div>
       </div>`;
-
-    applyPos(el, POSITIONS[idx], true);
+    applyPos(el, getPositions().stack[idx], true);
     return el;
   }
 
@@ -3364,14 +3394,13 @@ renderCards();
     });
     buildDots();
 
-    // Animate in — stagger from back to front
+    const pos = getPositions();
     cards.forEach((el, i) => {
-      el.style.opacity   = '0';
-      el.style.transform += ' translateY(24px)';
+      el.style.opacity = '0';
       setTimeout(() => {
-        el.style.transition = 'transform .65s cubic-bezier(0.23,1,0.32,1), opacity .5s ease, box-shadow .65s';
-        el.style.opacity   = '1';
-        applyPos(el, POSITIONS[i], false);
+        el.style.transition = 'transform .65s cubic-bezier(0.23,1,0.32,1), opacity .5s ease';
+        el.style.opacity = '1';
+        applyPos(el, pos.stack[i], false);
       }, 80 + i * 70);
     });
   }
@@ -3379,12 +3408,12 @@ renderCards();
   function cycleTo() {
     activeIdx = (activeIdx + 1) % TOTAL_SETS;
     const newItems = pickRandom(3);
+    const pos = getPositions();
 
-    // Slide old cards out downward
     cards.forEach((el, i) => {
       el.style.transition = 'transform .45s cubic-bezier(0.76,0,0.24,1), opacity .35s ease';
       el.style.opacity   = '0';
-      el.style.transform = `translate(${POSITIONS[i].x}px, ${POSITIONS[i].y + 30}px) rotate(${POSITIONS[i].rot}deg) scale(${POSITIONS[i].scale})`;
+      el.style.transform = `translate(${pos.stack[i].x}px, ${pos.stack[i].y + 30}px) rotate(${pos.stack[i].rot}deg) scale(${pos.stack[i].scale})`;
     });
 
     setTimeout(() => {
@@ -3392,20 +3421,18 @@ renderCards();
       stack.innerHTML = '';
       cards = items.map((item, i) => {
         const el = buildCard(item, i);
-        el.style.opacity   = '0';
+        el.style.opacity = '0';
         stack.appendChild(el);
         return el;
       });
-
+      const p2 = getPositions();
       cards.forEach((el, i) => {
         setTimeout(() => {
           el.style.transition = 'transform .65s cubic-bezier(0.23,1,0.32,1), opacity .5s ease';
-          el.style.opacity   = '1';
-          applyPos(el, hovered ? SPREAD[i] : POSITIONS[i], false);
-          if (hovered) bindHover();
+          el.style.opacity = '1';
+          applyPos(el, hovered ? p2.spread[i] : p2.stack[i], false);
         }, i * 70);
       });
-
       updateDots();
     }, 400);
   }
@@ -3423,15 +3450,23 @@ renderCards();
   function onEnter() {
     hovered = true;
     clearInterval(cycleTimer);
-    cards.forEach((el, i) => applyPos(el, SPREAD[i], false));
-    gallery.style.boxShadow = 'none';
+    const pos = getPositions();
+    cards.forEach((el, i) => applyPos(el, pos.spread[i], false));
   }
 
   function onLeave() {
     hovered = false;
-    cards.forEach((el, i) => applyPos(el, POSITIONS[i], false));
+    const pos = getPositions();
+    cards.forEach((el, i) => applyPos(el, pos.stack[i], false));
     startCycle();
   }
+
+  // On resize: re-apply current positions so cards don't drift
+  window.addEventListener('resize', () => {
+    if (!cards.length) return;
+    const pos = getPositions();
+    cards.forEach((el, i) => applyPos(el, hovered ? pos.spread[i] : pos.stack[i], true));
+  });
 
   // Wait until PORTFOLIO is defined and page loaded
   function tryInit() {
