@@ -292,23 +292,24 @@
       background: var(--oat);
     }
 
-    /* Two-column layout when gallery is visible */
-    @media (min-width: 1025px) {
+    /* ─── HERO LAYOUT SYSTEM ─────────────────────────────
+       lg  (≥1280px)   : two-column flex row
+       md  (861–1279px): single column + gallery corner-peek
+       sm  (≤860px)    : text only, no gallery
+    ────────────────────────────────────────────────────── */
+
+    /* Hero text wrapper — transparent by default (column flow) */
+    .hero-content { display: contents; }
+
+    /* ── LG: two-column ── */
+    @media (min-width: 1280px) {
       #hero {
         flex-direction: row;
         align-items: center;
-        gap: 2rem;
-        /* top/bottom padding so hero-foot (absolute) still looks good */
+        gap: clamp(2rem, 3.5vw, 5rem);
         padding-top: 7rem;
         padding-bottom: 7rem;
       }
-    }
-
-    /* Hero text content — left column */
-    .hero-content {
-      display: contents; /* transparent by default (single col) */
-    }
-    @media (min-width: 1025px) {
       .hero-content {
         display: flex;
         flex-direction: column;
@@ -316,6 +317,43 @@
         flex: 1 1 0;
         min-width: 0;
       }
+      /* Scale h1 down so it fits the left column */
+      .hero-h1 { font-size: clamp(2rem, 5.2vw, 9rem); }
+    }
+
+    /* ── MD: corner-peek gallery ── */
+    @media (min-width: 861px) and (max-width: 1279px) {
+      .hero-gallery {
+        display: block;
+        position: absolute;
+        /* bottom-right corner, slightly clipped for depth */
+        bottom: 4.5rem;
+        right: 0;
+        width: clamp(160px, 19vw, 230px);
+        /* peek: 25% off right edge for a "sliding in" feel */
+        transform: translateX(22%);
+        opacity: .92;
+        z-index: 3;
+        /* fade right edge more strongly when corner-docked */
+        --hg-fade-start: 35%;
+      }
+      /* Stronger right-edge fade in corner mode */
+      .hero-gallery::after {
+        background: linear-gradient(
+          to right,
+          transparent var(--hg-fade-start, 60%),
+          rgba(255,240,225,.85) 100%
+        );
+      }
+    }
+    /* Very short landscapes: hide gallery to avoid overlap */
+    @media (min-width: 861px) and (max-width: 1279px) and (max-height: 560px) {
+      .hero-gallery { display: none; }
+    }
+
+    /* ── SM: hidden ── */
+    @media (max-width: 860px) {
+      .hero-gallery { display: none; }
     }
 
     /* Video background */
@@ -651,8 +689,7 @@
       white-space: nowrap;
     }
 
-    /* Gallery width step-down — clamp() handles the rest */
-    @media (max-width: 1200px) { .hero-gallery { width: clamp(180px, 24vw, 280px); } }
+    /* Gallery width for LG two-column — handled by .hero-gallery base styles */
 
     /* Text protection layer behind heading */
     .hero-text-guard {
