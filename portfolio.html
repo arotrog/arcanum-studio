@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="ru" data-lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Портфолио — АРКАНУМ</title>
+  <meta name="description" content="Все работы дизайн-студии Арканум: нейрофотосессии, web дизайн, digital, маркетплейсы, брендинг.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;600;700;900&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --oat:         #FFF0E1;
+      --indigo:      #C8C3FF;
+      --indigo-deep: #7B76D3;
+      --dark:        #14121E;
+      --dark-2:      #1E1B2E;
+      --muted:       #9896A8;
+      --font-h: 'Unbounded', sans-serif;
+      --font-b: 'Manrope', sans-serif;
+      --ease-out: cubic-bezier(0.16,1,0.3,1);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-b); background: var(--dark-2); color: var(--oat); overflow-x: hidden; cursor: none; }
+    a { text-decoration: none; color: inherit; }
+    img { display: block; max-width: 100%; }
+
+    /* ── Cursor ── */
+    #cur-dot {
+      position: fixed; width: 6px; height: 6px;
+      background: var(--indigo); border-radius: 50%;
+      pointer-events: none; z-index: 25000;
+      transform: translate(-50%,-50%);
+      transition: opacity .25s; mix-blend-mode: screen;
+    }
+    #cur-ring {
+      position: fixed; width: 40px; height: 40px;
+      border: 2px solid rgba(200,195,255,.6); border-radius: 50%;
+      pointer-events: none; z-index: 24999;
+      transform: translate(-50%,-50%);
+      transition: width .3s var(--ease-out), height .3s var(--ease-out),
+                  background .3s, border-color .3s;
+    }
+    body.ch-view #cur-ring { width: 72px; height: 72px; background: var(--oat); border-color: var(--oat); }
+    body.ch-view #cur-dot  { opacity: 0; }
+    body.ch-link #cur-ring { width: 22px; height: 22px; background: var(--indigo); border-color: var(--indigo); }
+    body.ch-link #cur-dot  { opacity: 0; }
+    @media (hover: none) { #cur-dot, #cur-ring { display: none; } body { cursor: auto; } }
+
+    /* ── Header ── */
+    #hdr {
+      position: sticky; top: 0; z-index: 100;
+      padding: 1.25rem 3rem;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(30,27,46,.85);
+      backdrop-filter: blur(20px) saturate(1.4);
+      -webkit-backdrop-filter: blur(20px) saturate(1.4);
+      border-bottom: 1px solid rgba(200,195,255,.08);
+    }
+    .hdr-logo {
+      font-family: var(--font-h); font-size: .9rem; font-weight: 700;
+      letter-spacing: .22em; color: var(--oat); opacity: .7;
+      transition: opacity .25s; cursor: none;
+    }
+    .hdr-logo:hover { opacity: 1; }
+    .hdr-back {
+      display: flex; align-items: center; gap: .5rem;
+      font-size: .8rem; letter-spacing: .06em;
+      color: var(--indigo); cursor: none;
+      transition: color .2s;
+    }
+    .hdr-back:hover { color: var(--oat); }
+    .hdr-right { display: flex; align-items: center; gap: .5rem; }
+    .lang-btn { cursor: none; font-size: .7rem; font-weight: 500; letter-spacing: .12em; color: var(--muted); padding: .25rem; transition: color .2s; }
+    .lang-btn.on { color: var(--oat); }
+    .lang-sep { font-size: .55rem; color: var(--muted); }
+
+    /* ── Page hero ── */
+    .page-hero {
+      padding: 5rem 3rem 3.5rem;
+      border-bottom: 1px solid rgba(200,195,255,.08);
+    }
+    .page-label {
+      font-size: .65rem; letter-spacing: .28em; text-transform: uppercase;
+      color: var(--indigo-deep); margin-bottom: 1rem;
+    }
+    .page-title {
+      font-family: var(--font-h);
+      font-size: clamp(2.5rem, 6vw, 5.5rem);
+      font-weight: 900; line-height: .95; letter-spacing: -.025em;
+    }
+    .page-sub {
+      font-size: 1rem; color: var(--muted); margin-top: 1rem; max-width: 440px; line-height: 1.65;
+    }
+
+    /* ── Filters ── */
+    .filters {
+      padding: 2rem 3rem;
+      display: flex; flex-wrap: wrap; gap: 1rem;
+      align-items: center;
+      border-bottom: 1px solid rgba(200,195,255,.08);
+      position: sticky; top: 69px; z-index: 50;
+      background: rgba(20,18,30,.9);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .filter-group { display: flex; gap: .4rem; flex-wrap: wrap; }
+    .filter-sep { width: 1px; height: 24px; background: rgba(200,195,255,.15); align-self: center; }
+    .fbtn {
+      padding: .4rem 1rem; border-radius: 100px; font-size: .75rem;
+      border: 1px solid rgba(200,195,255,.2); color: rgba(200,195,255,.55);
+      cursor: none; transition: all .25s var(--ease-out); white-space: nowrap;
+    }
+    .fbtn.on, .fbtn:hover { background: var(--indigo); color: var(--dark-2); border-color: var(--indigo); }
+    .filter-count {
+      margin-left: auto; font-size: .72rem;
+      color: var(--muted); white-space: nowrap;
+    }
+
+    /* ── Grid ── */
+    .pf-grid {
+      padding: 2.5rem 3rem 5rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(clamp(220px, 22vw, 320px), 1fr));
+      gap: 1.25rem;
+    }
+
+    /* ── Card ── */
+    .pg-card {
+      border-radius: 1.25rem; overflow: hidden;
+      position: relative; aspect-ratio: 3/4;
+      cursor: none;
+      transition: transform .5s var(--ease-out), box-shadow .5s var(--ease-out);
+      will-change: transform;
+    }
+    .pg-card:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 24px 60px rgba(0,0,0,.4); }
+    .pg-card-bg {
+      position: absolute; inset: 0;
+      background-size: cover; background-position: center;
+    }
+    .pg-card-bg img {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; opacity: 0; transition: opacity .6s ease;
+    }
+    .pg-card-bg img.loaded { opacity: 1; }
+    .pg-card-ov {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(14,12,26,.92) 0%, rgba(14,12,26,.3) 55%, transparent 100%);
+    }
+    .pg-card-info {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 1.25rem;
+    }
+    .pg-card-tag {
+      display: inline-block; font-size: .58rem; letter-spacing: .1em; text-transform: uppercase;
+      padding: .18rem .55rem; border-radius: 100px;
+      border: 1px solid rgba(200,195,255,.4); color: var(--indigo);
+      margin-bottom: .5rem;
+    }
+    .pg-card-title {
+      font-family: var(--font-h); font-size: .9rem; font-weight: 700;
+      color: var(--oat); line-height: 1.3; margin-bottom: .25rem;
+    }
+    .pg-card-auth { font-size: .65rem; color: rgba(255,240,225,.4); }
+    .pg-card-zoom {
+      position: absolute; top: 1rem; right: 1rem;
+      width: 34px; height: 34px; border-radius: 50%;
+      background: rgba(255,255,255,.1); backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .85rem; color: rgba(255,255,255,.7);
+      opacity: 0; transform: scale(.8);
+      transition: opacity .3s, transform .3s var(--ease-out);
+    }
+    .pg-card:hover .pg-card-zoom { opacity: 1; transform: scale(1); }
+
+    /* ── Empty state ── */
+    .pf-empty-grid {
+      grid-column: 1/-1; text-align: center;
+      padding: 5rem 0;
+      font-family: var(--font-h); font-size: 1rem;
+      letter-spacing: .1em; color: rgba(200,195,255,.25);
+    }
+
+    /* ── Lightbox ── */
+    #lightbox {
+      position: fixed; inset: 0; z-index: 10000;
+      display: flex; align-items: center; justify-content: center;
+      padding: 1.5rem;
+      opacity: 0; pointer-events: none;
+      transition: opacity .35s var(--ease-out);
+    }
+    #lightbox.open { opacity: 1; pointer-events: auto; }
+    .lb-backdrop {
+      position: absolute; inset: 0;
+      background: rgba(10,8,20,.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .lb-box {
+      position: relative; z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 2rem;
+      max-width: 960px; width: 100%;
+      max-height: 90vh;
+      transform: translateY(20px) scale(.97);
+      transition: transform .35s var(--ease-out);
+    }
+    #lightbox.open .lb-box { transform: translateY(0) scale(1); }
+    .lb-img-wrap {
+      border-radius: 1.25rem; overflow: hidden;
+      aspect-ratio: 3/4; position: relative;
+      background: var(--dark);
+    }
+    .lb-img-wrap img {
+      width: 100%; height: 100%; object-fit: cover;
+      opacity: 0; transition: opacity .5s ease;
+    }
+    .lb-img-wrap img.loaded { opacity: 1; }
+    .lb-img-grad {
+      position: absolute; inset: 0;
+      background: linear-gradient(145deg, transparent 60%, rgba(14,12,26,.6) 100%);
+      pointer-events: none;
+    }
+    .lb-info {
+      display: flex; flex-direction: column;
+      justify-content: center; padding: 1rem 0;
+    }
+    .lb-tag {
+      display: inline-block; font-size: .62rem; letter-spacing: .12em; text-transform: uppercase;
+      padding: .22rem .65rem; border-radius: 100px;
+      border: 1px solid rgba(200,195,255,.35); color: var(--indigo);
+      margin-bottom: 1.25rem; width: fit-content;
+    }
+    .lb-title {
+      font-family: var(--font-h); font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+      font-weight: 900; line-height: 1.1; letter-spacing: -.02em;
+      margin-bottom: .75rem;
+    }
+    .lb-author { font-size: .85rem; color: var(--muted); margin-bottom: 2rem; }
+    .lb-niche-label {
+      font-size: .7rem; letter-spacing: .16em; text-transform: uppercase;
+      color: rgba(200,195,255,.4); margin-bottom: .35rem;
+    }
+    .lb-niche-val {
+      font-family: var(--font-h); font-size: .85rem; font-weight: 700;
+      color: var(--indigo-deep);
+    }
+    .lb-close {
+      position: absolute; top: -3rem; right: 0;
+      width: 40px; height: 40px; border-radius: 50%;
+      border: 1px solid rgba(200,195,255,.25);
+      background: transparent; color: var(--muted);
+      font-size: 1rem; cursor: none;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color .2s, color .2s;
+    }
+    .lb-close:hover { border-color: var(--oat); color: var(--oat); }
+    .lb-nav {
+      display: flex; gap: .75rem; margin-top: 2.5rem;
+    }
+    .lb-nav-btn {
+      padding: .65rem 1.25rem; border-radius: 100px;
+      border: 1px solid rgba(200,195,255,.2);
+      background: transparent; color: var(--indigo);
+      font-family: var(--font-h); font-size: .7rem; font-weight: 700;
+      cursor: none; transition: all .25s;
+    }
+    .lb-nav-btn:hover { background: var(--indigo); color: var(--dark-2); border-color: var(--indigo); }
+
+    @media (max-width: 720px) {
+      .lb-box { grid-template-columns: 1fr; }
+      .lb-img-wrap { aspect-ratio: 4/3; }
+      .lb-info { padding: 0; }
+      .lb-nav { margin-top: 1.25rem; }
+      .lb-close { top: -2.5rem; }
+    }
+
+    /* ── Footer ── */
+    #footer {
+      padding: 2rem 3rem;
+      background: var(--dark);
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid rgba(200,195,255,.06);
+    }
+    .ft-logo { font-family: var(--font-h); font-size: .75rem; font-weight: 700; letter-spacing: .22em; color: var(--oat); opacity: .35; }
+    .ft-copy { font-size: .7rem; color: var(--muted); }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      #hdr, .page-hero, .filters, .pf-grid, #footer { padding-left: 1.5rem; padding-right: 1.5rem; }
+      .filters { top: 60px; }
+    }
+    @media (max-width: 480px) {
+      .pf-grid { grid-template-columns: repeat(2, 1fr); gap: .75rem; }
+      .filter-sep { display: none; }
+    }
+
+    /* ── Reduced motion ── */
+    @media (prefers-reduced-motion: reduce) {
+      .pg-card { transition: none; }
+      #lightbox, .lb-box { transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div id="cur-dot"></div>
+<div id="cur-ring"></div>
+
+<!-- Header -->
+<header id="hdr">
+  <a href="index.html" class="hdr-logo">АРКАНУМ</a>
+  <a href="index.html" class="hdr-back">
+    ← <span data-ru="На главную" data-en="Back to home">На главную</span>
+  </a>
+  <div class="hdr-right">
+    <button class="lang-btn on" data-lang="ru">RU</button>
+    <span class="lang-sep">|</span>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+</header>
+
+<!-- Page hero -->
+<div class="page-hero">
+  <p class="page-label" data-ru="Наши работы" data-en="Our works">Наши работы</p>
+  <h1 class="page-title" data-ru="Портфолио" data-en="Portfolio">Портфолио</h1>
+  <p class="page-sub"
+     data-ru="Все проекты студии. Нажмите на работу для подробного просмотра."
+     data-en="All studio projects. Click on a work for a detailed view.">
+    Все проекты студии. Нажмите на работу для подробного просмотра.
+  </p>
+</div>
+
+<!-- Filters -->
+<div class="filters">
+  <div class="filter-group" id="teamFilters">
+    <button class="fbtn on" data-filter="all"    data-ru="Все" data-en="All">Все</button>
+    <button class="fbtn"    data-filter="alena"  data-ru="Алёна" data-en="Alena">Алёна</button>
+    <button class="fbtn"    data-filter="nikita" data-ru="Никита" data-en="Nikita">Никита</button>
+  </div>
+  <div class="filter-sep"></div>
+  <div class="filter-group" id="nicheFilters">
+    <button class="fbtn on" data-niche="all"         data-ru="Всё" data-en="All">Всё</button>
+    <button class="fbtn"    data-niche="neuro"        data-ru="Нейрофото" data-en="AI Photo">Нейрофото</button>
+    <button class="fbtn"    data-niche="marketplace"  data-ru="Маркетплейс" data-en="Marketplace">Маркетплейс</button>
+    <button class="fbtn"    data-niche="digital"      data-ru="Digital" data-en="Digital">Digital</button>
+    <button class="fbtn"    data-niche="web"          data-ru="Web" data-en="Web">Web</button>
+    <button class="fbtn"    data-niche="brand"        data-ru="Брендинг" data-en="Branding">Брендинг</button>
+  </div>
+  <div class="filter-count" id="filterCount"></div>
+</div>
+
+<!-- Grid -->
+<div class="pf-grid" id="pfGrid"></div>
+
+<!-- Lightbox -->
+<div id="lightbox" role="dialog" aria-modal="true">
+  <div class="lb-backdrop" id="lbBackdrop"></div>
+  <div class="lb-box">
+    <button class="lb-close" id="lbClose">✕</button>
+    <div class="lb-img-wrap">
+      <img id="lbImg" src="" alt="">
+      <div class="lb-img-grad"></div>
+    </div>
+    <div class="lb-info">
+      <div class="lb-tag" id="lbTag"></div>
+      <h2 class="lb-title" id="lbTitle"></h2>
+      <p class="lb-author" id="lbAuthor"></p>
+      <p class="lb-niche-label" data-ru="Направление" data-en="Category">Направление</p>
+      <p class="lb-niche-val" id="lbNiche"></p>
+      <div class="lb-nav">
+        <button class="lb-nav-btn" id="lbPrev">← <span data-ru="Пред." data-en="Prev">Пред.</span></button>
+        <button class="lb-nav-btn" id="lbNext"><span data-ru="След." data-en="Next">След.</span> →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer id="footer">
+  <div class="ft-logo">АРКАНУМ</div>
+  <p class="ft-copy" data-ru="© 2025 Арканум. Все права защищены." data-en="© 2025 Arcanum. All rights reserved.">
+    © 2025 Арканум. Все права защищены.
+  </p>
+</footer>
+
+<script>
+/* ── Data (mirrors index.html) ── */
+const IMG = {
+  neuro:    'https://pikaso.cdnpk.net/private/production/4517969369/render.jpg?token=exp=1780963200~hmac=3cfe00bacb37db7b2ebf9a8c8115f245108dc77607d96e082f37236fe8001fdf',
+  market:   'https://pikaso.cdnpk.net/private/production/4517970790/render.png?token=exp=1780963200~hmac=ec5585281e6799cf5a5fbdff99dd3a9669cff7186cf2a168dbfae841ebed50ba',
+  digital:  'https://pikaso.cdnpk.net/private/production/4517971620/render.png?token=exp=1780963200~hmac=3c3547456f7b9bcff7c9e82b2cb07e9b1d7eea8652de1de06572a73a06a65a07',
+  web:      'https://pikaso.cdnpk.net/private/production/4517971933/render.png?token=exp=1780963200~hmac=61873c4bf5e67e566f264322fb1e964291b81447766dde3c92ca53b517da0f13',
+  brand:    'https://pikaso.cdnpk.net/private/production/4517972591/render.png?token=exp=1780963200~hmac=698088fb70de146582d682b0922761d7233e21f745e3f3453e7994b9c4ceaaa5',
+  neuroArt: 'https://pikaso.cdnpk.net/private/production/4517971848/render.jpg?token=exp=1780963200~hmac=3cc6c3242fc5f9bc1e72eb2c6ad3068bc3355edac67679e31582966ee3d06c97',
+};
+const PORTFOLIO = [
+  { id:1,  ru:'Лесная магия',               en:'Forest Magic',           niche:'neuro',       author:'alena',  aName:'Алёна',  img:IMG.neuro },
+  { id:2,  ru:'Карточки WB: косметика',     en:'WB Cards: Cosmetics',    niche:'marketplace', author:'alena',  aName:'Алёна',  img:IMG.market },
+  { id:3,  ru:'SMM для бренда одежды',      en:'SMM for Fashion Brand',  niche:'digital',     author:'alena',  aName:'Алёна',  img:IMG.digital },
+  { id:4,  ru:'Лендинг фитнес-студии',      en:'Fitness Studio Landing', niche:'web',         author:'alena',  aName:'Алёна',  img:IMG.web },
+  { id:5,  ru:'Карточки Ozon: электроника', en:'Ozon: Electronics',      niche:'marketplace', author:'alena',  aName:'Алёна',  img:IMG.market },
+  { id:6,  ru:'Web для ресторана',           en:'Restaurant Website',     niche:'web',         author:'alena',  aName:'Алёна',  img:IMG.web },
+  { id:7,  ru:'AI Фэшн лукбук',             en:'AI Fashion Lookbook',    niche:'neuro',       author:'nikita', aName:'Никита', img:IMG.neuro },
+  { id:8,  ru:'Нейро-портреты',             en:'Neural Portraits',       niche:'neuro',       author:'nikita', aName:'Никита', img:IMG.neuroArt },
+  { id:9,  ru:'AI Видео-реклама',           en:'AI Video Ad',            niche:'digital',     author:'nikita', aName:'Никита', img:IMG.digital },
+  { id:10, ru:'AI Брендинг',                en:'AI Branding',            niche:'brand',       author:'nikita', aName:'Никита', img:IMG.brand },
+  { id:11, ru:'Нейро-арт для интерьера',    en:'Neural Art for Interior',niche:'neuro',       author:'nikita', aName:'Никита', img:IMG.neuroArt },
+  { id:12, ru:'Айдентика бренда',           en:'Brand Identity',         niche:'brand',       author:'alena',  aName:'Алёна',  img:IMG.brand },
+];
+const NICHE_LABELS = {
+  neuro:       { ru:'Нейрофото',   en:'AI Photo' },
+  marketplace: { ru:'Маркетплейс', en:'Marketplace' },
+  digital:     { ru:'Digital',     en:'Digital' },
+  web:         { ru:'Web',         en:'Web' },
+  brand:       { ru:'Брендинг',    en:'Branding' },
+};
+
+/* ── State ── */
+let activeLang  = 'ru';
+let activeTeam  = 'all';
+let activeNiche = 'all';
+let filteredItems = [];
+let lbIdx = 0;
+
+/* ── Render grid ── */
+function renderGrid() {
+  const grid = document.getElementById('pfGrid');
+  filteredItems = PORTFOLIO.filter(p =>
+    (activeTeam  === 'all' || p.author === activeTeam) &&
+    (activeNiche === 'all' || p.niche  === activeNiche)
+  );
+
+  const countEl = document.getElementById('filterCount');
+  countEl.textContent = activeLang === 'ru'
+    ? `${filteredItems.length} работ`
+    : `${filteredItems.length} works`;
+
+  if (!filteredItems.length) {
+    grid.innerHTML = `<div class="pf-empty-grid">${activeLang === 'ru' ? 'Работ не найдено' : 'No works found'}</div>`;
+    return;
+  }
+
+  grid.innerHTML = filteredItems.map((p, i) => `
+    <div class="pg-card" data-idx="${i}" style="animation-delay:${i * 0.04}s">
+      <div class="pg-card-bg" style="background:linear-gradient(145deg,#1a1040,#0d0820);">
+        <img src="${p.img}" alt="${p.ru}" loading="lazy" onload="this.classList.add('loaded')">
+      </div>
+      <div class="pg-card-ov"></div>
+      <div class="pg-card-zoom">⤢</div>
+      <div class="pg-card-info">
+        <div class="pg-card-tag">${NICHE_LABELS[p.niche][activeLang]}</div>
+        <div class="pg-card-title">${activeLang === 'ru' ? p.ru : p.en}</div>
+        <div class="pg-card-auth">${p.aName}</div>
+      </div>
+    </div>
+  `).join('');
+
+  /* Card click → lightbox */
+  grid.querySelectorAll('.pg-card').forEach(card => {
+    card.addEventListener('click', () => openLightbox(+card.dataset.idx));
+    card.addEventListener('mouseenter', () => document.body.classList.add('ch-view'));
+    card.addEventListener('mouseleave', () => document.body.classList.remove('ch-view'));
+  });
+}
+
+/* ── Filters ── */
+document.getElementById('teamFilters').addEventListener('click', e => {
+  const btn = e.target.closest('.fbtn');
+  if (!btn) return;
+  document.querySelectorAll('#teamFilters .fbtn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  activeTeam = btn.dataset.filter;
+  renderGrid();
+});
+
+document.getElementById('nicheFilters').addEventListener('click', e => {
+  const btn = e.target.closest('.fbtn');
+  if (!btn) return;
+  document.querySelectorAll('#nicheFilters .fbtn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  activeNiche = btn.dataset.niche;
+  renderGrid();
+});
+
+/* ── Lightbox ── */
+const lightbox = document.getElementById('lightbox');
+const lbImg    = document.getElementById('lbImg');
+const lbTag    = document.getElementById('lbTag');
+const lbTitle  = document.getElementById('lbTitle');
+const lbAuthor = document.getElementById('lbAuthor');
+const lbNiche  = document.getElementById('lbNiche');
+
+function openLightbox(idx) {
+  lbIdx = idx;
+  populateLightbox();
+  lightbox.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  lightbox.classList.remove('open');
+  document.body.style.overflow = '';
+}
+function populateLightbox() {
+  const p = filteredItems[lbIdx];
+  if (!p) return;
+  lbImg.classList.remove('loaded');
+  lbImg.src = p.img;
+  lbImg.alt = p.ru;
+  lbImg.onload = () => lbImg.classList.add('loaded');
+  lbTag.textContent    = NICHE_LABELS[p.niche][activeLang];
+  lbTitle.textContent  = activeLang === 'ru' ? p.ru : p.en;
+  lbAuthor.textContent = p.aName;
+  lbNiche.textContent  = NICHE_LABELS[p.niche][activeLang];
+}
+
+document.getElementById('lbClose').addEventListener('click', closeLightbox);
+document.getElementById('lbBackdrop').addEventListener('click', closeLightbox);
+document.getElementById('lbPrev').addEventListener('click', () => {
+  lbIdx = (lbIdx - 1 + filteredItems.length) % filteredItems.length;
+  populateLightbox();
+});
+document.getElementById('lbNext').addEventListener('click', () => {
+  lbIdx = (lbIdx + 1) % filteredItems.length;
+  populateLightbox();
+});
+document.addEventListener('keydown', e => {
+  if (!lightbox.classList.contains('open')) return;
+  if (e.key === 'Escape')    closeLightbox();
+  if (e.key === 'ArrowLeft') { lbIdx = (lbIdx - 1 + filteredItems.length) % filteredItems.length; populateLightbox(); }
+  if (e.key === 'ArrowRight'){ lbIdx = (lbIdx + 1) % filteredItems.length; populateLightbox(); }
+});
+
+/* ── Language ── */
+let activeLangEl = 'ru';
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    activeLang = btn.dataset.lang;
+    document.documentElement.setAttribute('data-lang', activeLang);
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    document.querySelectorAll(`[data-${activeLang}]`).forEach(el => {
+      const v = el.getAttribute(`data-${activeLang}`);
+      if (v !== null) el.textContent = v;
+    });
+    /* Update filter button labels */
+    document.querySelectorAll('.fbtn[data-ru]').forEach(b => {
+      b.textContent = b.getAttribute(`data-${activeLang}`) || b.textContent;
+    });
+    renderGrid();
+  });
+});
+
+/* ── Cursor ── */
+(function() {
+  const dot = document.getElementById('cur-dot');
+  const ring = document.getElementById('cur-ring');
+  let rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    dot.style.left = e.clientX + 'px';
+    dot.style.top  = e.clientY + 'px';
+    rx += (e.clientX - rx) * 0.12;
+    ry += (e.clientY - ry) * 0.12;
+  });
+  (function tick() {
+    ring.style.left = rx + 'px';
+    ring.style.top  = ry + 'px';
+    requestAnimationFrame(tick);
+  })();
+  document.querySelectorAll('a, button, .fbtn').forEach(el => {
+    el.addEventListener('mouseenter', () => document.body.classList.add('ch-link'));
+    el.addEventListener('mouseleave', () => document.body.classList.remove('ch-link'));
+  });
+})();
+
+/* ── Init ── */
+renderGrid();
+</script>
+</body>
+</html>

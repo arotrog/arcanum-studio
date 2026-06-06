@@ -53,7 +53,7 @@
       background: var(--indigo-deep);
       border-radius: 50%;
       pointer-events: none;
-      z-index: 9999;
+      z-index: 25000;
       transform: translate(-50%,-50%);
       transition: opacity .25s, background .3s;
       mix-blend-mode: multiply;
@@ -64,7 +64,7 @@
       border: 2.5px solid rgba(20,18,30,.7);
       border-radius: 50%;
       pointer-events: none;
-      z-index: 9998;
+      z-index: 24999;
       transform: translate(-50%,-50%);
       display: flex; align-items: center; justify-content: center;
       overflow: hidden;
@@ -675,6 +675,29 @@
       letter-spacing: -.025em;
       margin-bottom: 2rem;
     }
+    /* "All works" link */
+    .pf-all-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      font-family: var(--font-h);
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      color: var(--indigo);
+      border: 1px solid rgba(200,195,255,.35);
+      border-radius: 100px;
+      padding: .55rem 1.25rem;
+      margin-bottom: 1.75rem;
+      transition: background .25s, color .25s, border-color .25s;
+      cursor: none;
+    }
+    .pf-all-btn:hover {
+      background: var(--indigo);
+      color: var(--dark-2);
+      border-color: var(--indigo);
+    }
+
     /* Team btns */
     .team-sw { display: flex; gap: .5rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
     .team-btn {
@@ -738,14 +761,7 @@
       transition: transform .6s var(--ease-out);
     }
     .pf-card:hover .card-bg { transform: scale(1.06); }
-    .card-vid {
-      position: absolute; inset: 0;
-      opacity: 0;
-      background-size: 300% 300%;
-      animation: gshift 3s ease infinite;
-      transition: opacity .45s;
-    }
-    .pf-card:hover .card-vid { opacity: 1; }
+    .card-vid { display: none; }
     @keyframes gshift {
       0%   { background-position: 0% 50%; }
       50%  { background-position: 100% 50%; }
@@ -1582,6 +1598,8 @@
   <div class="pf-hdr">
     <p class="pf-lbl" data-ru="Наши работы" data-en="Our works">Наши работы</p>
     <h2 class="pf-title" data-ru="Портфолио" data-en="Portfolio">Портфолио</h2>
+    <a href="portfolio.html" class="pf-all-btn rv"
+       data-ru="Смотреть все работы →" data-en="View all works →">Смотреть все работы →</a>
 
     <div class="team-sw">
       <button class="team-btn on" data-filter="all" data-ru="Общее" data-en="All">Общее</button>
@@ -1884,10 +1902,28 @@ let activeTeam  = 'all';
 let activeNiche = 'all';
 
 /* ================================================
-   RENDER CARDS
+   RENDER CARDS — triple for infinite cyclic scroll
 ================================================ */
+function cardHTML(p) {
+  return `
+    <div class="pf-card" data-author="${p.author}" data-niche="${p.niche}" data-id="${p.id}">
+      <div class="card-bg" style="background:${p.bg};">
+        ${p.img ? `<img src="${p.img}" alt="${p.ru}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .6s ease;" onload="this.style.opacity='1'">` : ''}
+      </div>
+      <div class="card-ov"></div>
+      <div class="card-shimmer"></div>
+      <div class="card-info">
+        <div class="card-tags"><span class="card-tag">${NICHE_LABELS[p.niche][activeLang]}</span></div>
+        <div class="card-title">${activeLang === 'ru' ? p.ru : p.en}</div>
+        <div class="card-auth">${p.aName}</div>
+      </div>
+      <div class="card-cta">${activeLang === 'ru' ? 'Смотреть →' : 'View →'}</div>
+    </div>`;
+}
+
 function renderCards() {
   const track = document.getElementById('pfTrack');
+  const wrap  = document.getElementById('pfScroll');
   const items = PORTFOLIO.filter(p =>
     (activeTeam  === 'all' || p.author === activeTeam) &&
     (activeNiche === 'all' || p.niche  === activeNiche)
@@ -1898,22 +1934,15 @@ function renderCards() {
     return;
   }
 
-  track.innerHTML = items.map(p => `
-    <div class="pf-card" data-author="${p.author}" data-niche="${p.niche}">
-      <div class="card-bg" style="${p.img ? `background:${p.bg};` : `background:${p.bg};`}">
-        ${p.img ? `<img src="${p.img}" alt="${p.ru}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .6s ease;" onload="this.style.opacity='1'">` : ''}
-      </div>
-      <div class="card-vid" style="background:${p.sim};background-size:300% 300%;"></div>
-      <div class="card-ov"></div>
-      <div class="card-shimmer"></div>
-      <div class="card-info">
-        <div class="card-tags"><span class="card-tag">${NICHE_LABELS[p.niche][activeLang]}</span></div>
-        <div class="card-title">${activeLang === 'ru' ? p.ru : p.en}</div>
-        <div class="card-auth">${p.aName}</div>
-      </div>
-      <div class="card-cta">${activeLang === 'ru' ? 'Смотреть →' : 'View →'}</div>
-    </div>
-  `).join('');
+  // Triple the set so we can scroll infinitely in both directions
+  track.innerHTML = [...items, ...items, ...items].map(cardHTML).join('');
+
+  // After paint: jump to middle copy so user can scroll both ways
+  requestAnimationFrame(() => {
+    const singleW = track.scrollWidth / 3;
+    wrap.scrollLeft = singleW;
+    wrap._singleW = singleW;
+  });
 
   if (window.addCursorToCards) window.addCursorToCards();
 }
@@ -1940,16 +1969,15 @@ document.querySelectorAll('.niche-btn').forEach(btn => {
 });
 
 /* ================================================
-   DRAG SCROLL (portfolio)
+   PORTFOLIO SCROLL — drag + wheel + cyclic
 ================================================ */
 (function() {
   const wrap = document.getElementById('pfScroll');
   let down = false, sx = 0, sl = 0;
 
+  /* ── Drag ── */
   wrap.addEventListener('mousedown', e => {
-    down = true;
-    sx = e.pageX - wrap.offsetLeft;
-    sl = wrap.scrollLeft;
+    down = true; sx = e.pageX - wrap.offsetLeft; sl = wrap.scrollLeft;
     wrap.classList.add('grabbing');
   });
   wrap.addEventListener('mouseleave', () => { down = false; wrap.classList.remove('grabbing'); });
@@ -1960,10 +1988,27 @@ document.querySelectorAll('.niche-btn').forEach(btn => {
     wrap.scrollLeft = sl - (e.pageX - wrap.offsetLeft - sx) * 1.6;
   });
 
+  /* ── Touch ── */
   let ts = 0, tsl = 0;
   wrap.addEventListener('touchstart', e => { ts = e.touches[0].pageX; tsl = wrap.scrollLeft; }, { passive: true });
   wrap.addEventListener('touchmove',  e => {
     wrap.scrollLeft = tsl + (ts - e.touches[0].pageX) * 1.4;
+  }, { passive: true });
+
+  /* ── Mouse wheel → horizontal scroll (intercept before global smooth scroll) ── */
+  wrap.addEventListener('wheel', e => {
+    e.preventDefault();
+    e.stopPropagation();
+    const delta = Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+    wrap.scrollLeft += delta * 1.8;
+  }, { passive: false });
+
+  /* ── Cyclic: seamlessly loop when reaching edge of a copy ── */
+  wrap.addEventListener('scroll', () => {
+    const sw = wrap._singleW;
+    if (!sw) return;
+    if (wrap.scrollLeft < sw * 0.15)       wrap.scrollLeft += sw;
+    else if (wrap.scrollLeft > sw * 1.85)  wrap.scrollLeft -= sw;
   }, { passive: true });
 })();
 
