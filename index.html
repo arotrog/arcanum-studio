@@ -292,69 +292,8 @@
       background: var(--oat);
     }
 
-    /* ─── HERO LAYOUT SYSTEM ─────────────────────────────
-       lg  (≥1280px)   : two-column flex row
-       md  (861–1279px): single column + gallery corner-peek
-       sm  (≤860px)    : text only, no gallery
-    ────────────────────────────────────────────────────── */
-
-    /* Hero text wrapper — transparent by default (column flow) */
+    /* Hero text wrapper — transparent (display:contents passes children through) */
     .hero-content { display: contents; }
-
-    /* ── LG: two-column ── */
-    @media (min-width: 1280px) {
-      #hero {
-        flex-direction: row;
-        align-items: center;
-        gap: clamp(2rem, 3.5vw, 5rem);
-        padding-top: 7rem;
-        padding-bottom: 7rem;
-      }
-      .hero-content {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        flex: 1 1 0;
-        min-width: 0;
-      }
-      /* Scale h1 down so it fits the left column */
-      .hero-h1 { font-size: clamp(2rem, 5.2vw, 9rem); }
-    }
-
-    /* ── MD: corner-peek gallery ── */
-    @media (min-width: 861px) and (max-width: 1279px) {
-      .hero-gallery {
-        display: block;
-        position: absolute;
-        /* bottom-right corner, slightly clipped for depth */
-        bottom: 4.5rem;
-        right: 0;
-        width: clamp(160px, 19vw, 230px);
-        /* peek: 25% off right edge for a "sliding in" feel */
-        transform: translateX(22%);
-        opacity: .92;
-        z-index: 3;
-        /* fade right edge more strongly when corner-docked */
-        --hg-fade-start: 35%;
-      }
-      /* Stronger right-edge fade in corner mode */
-      .hero-gallery::after {
-        background: linear-gradient(
-          to right,
-          transparent var(--hg-fade-start, 60%),
-          rgba(255,240,225,.85) 100%
-        );
-      }
-    }
-    /* Very short landscapes: hide gallery to avoid overlap */
-    @media (min-width: 861px) and (max-width: 1279px) and (max-height: 560px) {
-      .hero-gallery { display: none; }
-    }
-
-    /* ── SM: hidden ── */
-    @media (max-width: 860px) {
-      .hero-gallery { display: none; }
-    }
 
     /* Video background */
     .hero-video-wrap {
@@ -399,7 +338,6 @@
 
     /* All hero content above video */
     .hero-content, .hero-eye, .hero-h1, .hero-foot { position: relative; z-index: 2; }
-    .hero-gallery { z-index: 2; }
 
     /* ================================================
        GHOST — peeks from М, then docks bottom-right
@@ -448,21 +386,6 @@
     @keyframes ghostBob {
       0%, 100% { transform: translateY(0px); }
       50%      { transform: translateY(-5px); }
-    }
-
-    /* Gallery right-edge fade — blends into hero bg */
-    .hero-gallery::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        to right,
-        transparent 60%,
-        rgba(255,240,225,.55) 100%
-      );
-      pointer-events: none;
-      z-index: 10;
-      border-radius: 18px;
     }
 
     /* ---- Thought cloud bubble ---- */
@@ -529,167 +452,6 @@
       .hero-ghost, .ghost-bubble { display: none !important; }
     }
 
-    /* ================================================
-       HERO GALLERY — stacked portfolio preview (right column)
-    ================================================ */
-    .hero-gallery {
-      /* Default: hidden (mobile) */
-      display: none;
-      z-index: 3;
-      pointer-events: auto;
-      position: relative;      /* in-flow flex item */
-      flex-shrink: 0;
-      /* Width adapts to viewport, height follows aspect-ratio on .hg-stack */
-      width: clamp(200px, 26vw, 400px);
-    }
-
-    @media (min-width: 1025px) {
-      .hero-gallery { display: block; }
-    }
-
-    .hg-stack {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 3 / 4.2;  /* cards are portrait */
-    }
-
-    .hg-card {
-      position: absolute;
-      inset: 0;
-      border-radius: 18px;
-      overflow: hidden;
-      cursor: none;
-      will-change: transform, box-shadow;
-      transition:
-        transform .65s cubic-bezier(0.23,1,0.32,1),
-        box-shadow .65s cubic-bezier(0.23,1,0.32,1),
-        opacity .5s ease;
-      box-shadow:
-        0 12px 40px rgba(20,18,30,.22),
-        0 2px 8px rgba(20,18,30,.12);
-    }
-    .hg-card::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      border: 1px solid rgba(255,255,255,.15);
-      pointer-events: none;
-      z-index: 3;
-    }
-
-    /* gradient bg layer */
-    .hg-bg {
-      position: absolute;
-      inset: 0;
-      background-size: 300% 300%;
-      animation: hgShift 4s ease infinite;
-      transition: background .6s ease;
-    }
-    @keyframes hgShift {
-      0%   { background-position: 0% 50%; }
-      50%  { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    /* overlay */
-    .hg-ov {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top,
-        rgba(14,12,26,.88) 0%,
-        rgba(14,12,26,.35) 50%,
-        rgba(14,12,26,.05) 100%);
-      z-index: 1;
-    }
-
-    /* info at bottom */
-    .hg-info {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      padding: 14px 14px 16px;
-      z-index: 2;
-    }
-    .hg-tag {
-      display: inline-block;
-      font-size: .56rem;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      padding: .18rem .5rem;
-      border-radius: 100px;
-      border: 1px solid rgba(200,195,255,.5);
-      color: var(--indigo);
-      margin-bottom: 6px;
-    }
-    .hg-title {
-      font-family: var(--font-h);
-      font-size: .8rem;
-      font-weight: 700;
-      color: var(--oat);
-      line-height: 1.3;
-    }
-    .hg-author {
-      font-size: .62rem;
-      color: rgba(255,240,225,.4);
-      margin-top: 3px;
-    }
-
-    /* sheen / shimmer sweep */
-    .hg-sheen {
-      position: absolute;
-      inset: 0;
-      z-index: 4;
-      background: linear-gradient(
-        105deg,
-        transparent 40%,
-        rgba(255,255,255,.13) 50%,
-        transparent 60%
-      );
-      background-size: 200% 100%;
-      background-position: 200% 0;
-      border-radius: inherit;
-      pointer-events: none;
-      transition: background-position 0s;
-    }
-    .hg-card:hover .hg-sheen {
-      background-position: -100% 0;
-      transition: background-position .7s ease;
-    }
-
-    /* counter dot strip */
-    .hg-dots {
-      position: absolute;
-      bottom: -22px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 5px;
-      z-index: 5;
-    }
-    .hg-dot {
-      width: 5px; height: 5px;
-      border-radius: 50%;
-      background: rgba(123,118,211,.3);
-      transition: background .3s, transform .3s;
-    }
-    .hg-dot.on {
-      background: var(--indigo-deep);
-      transform: scale(1.35);
-    }
-
-    /* "Портфолио" label above */
-    .hg-label {
-      position: absolute;
-      top: -28px;
-      left: 0;
-      font-size: .6rem;
-      letter-spacing: .22em;
-      text-transform: uppercase;
-      color: rgba(20,18,30,.4);
-      white-space: nowrap;
-    }
-
-    /* Gallery width for LG two-column — handled by .hero-gallery base styles */
 
     /* Text protection layer behind heading */
     .hero-text-guard {
@@ -1251,6 +1013,154 @@
     .ft-copy { font-size: .72rem; color: var(--muted); }
 
     /* ================================================
+       PRIVACY POLICY CHECKBOX
+    ================================================ */
+    .fg-policy {
+      display: flex;
+      align-items: flex-start;
+      gap: .75rem;
+    }
+    .policy-cb-wrap {
+      display: flex;
+      align-items: flex-start;
+      gap: .75rem;
+      cursor: none;
+    }
+    .policy-cb {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 18px; height: 18px;
+      min-width: 18px;
+      border: 1.5px solid rgba(200,195,255,.35);
+      border-radius: 5px;
+      background: transparent;
+      margin-top: 2px;
+      cursor: none;
+      position: relative;
+      transition: border-color .25s, background .25s;
+      flex-shrink: 0;
+    }
+    .policy-cb:checked {
+      background: var(--indigo-deep);
+      border-color: var(--indigo-deep);
+    }
+    .policy-cb:checked::after {
+      content: '';
+      position: absolute;
+      left: 4px; top: 1px;
+      width: 6px; height: 10px;
+      border: 2px solid #fff;
+      border-top: none;
+      border-left: none;
+      transform: rotate(45deg);
+    }
+    .policy-cb.error { border-color: #e94560; }
+    .policy-text {
+      font-size: .8rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .policy-link {
+      color: var(--indigo);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      cursor: none;
+      transition: color .2s;
+    }
+    .policy-link:hover { color: var(--oat); }
+    .policy-error {
+      font-size: .72rem;
+      color: #e94560;
+      margin-top: -.5rem;
+      display: none;
+    }
+    .policy-error.show { display: block; }
+
+    /* ================================================
+       PRIVACY POLICY MODAL
+    ================================================ */
+    #policyModal {
+      position: fixed;
+      inset: 0;
+      z-index: 20000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .35s var(--ease-out);
+    }
+    #policyModal.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .pm-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(14,12,26,.72);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .pm-box {
+      position: relative;
+      z-index: 1;
+      background: var(--dark-2);
+      border: 1px solid rgba(200,195,255,.12);
+      border-radius: 1.5rem;
+      padding: 2.5rem;
+      max-width: 580px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(200,195,255,.2) transparent;
+      transform: translateY(24px) scale(.97);
+      transition: transform .35s var(--ease-out);
+    }
+    #policyModal.open .pm-box {
+      transform: translateY(0) scale(1);
+    }
+    .pm-close {
+      position: absolute;
+      top: 1.25rem; right: 1.25rem;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      border: 1px solid rgba(200,195,255,.2);
+      background: transparent;
+      color: var(--muted);
+      font-size: 1rem;
+      cursor: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color .2s, color .2s;
+    }
+    .pm-close:hover { border-color: var(--oat); color: var(--oat); }
+    .pm-title {
+      font-family: var(--font-h);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--oat);
+      margin-bottom: 1.5rem;
+      padding-right: 2rem;
+    }
+    .pm-body {
+      font-size: .875rem;
+      line-height: 1.75;
+      color: var(--muted);
+    }
+    .pm-body h3 {
+      font-family: var(--font-h);
+      font-size: .85rem;
+      font-weight: 700;
+      color: var(--indigo);
+      margin: 1.25rem 0 .5rem;
+      letter-spacing: .04em;
+    }
+    .pm-body p { margin-bottom: .75rem; }
+
+    /* ================================================
        SCROLL REVEAL UTILITY
     ================================================ */
     .rv { opacity: 0; transform: translateY(36px); }
@@ -1608,13 +1518,6 @@
     </h1>
   </div>
 
-  <!-- Right gallery column -->
-  <div class="hero-gallery" id="heroGallery" aria-hidden="true">
-    <div class="hg-label" data-ru="Портфолио" data-en="Portfolio">Портфолио</div>
-    <div class="hg-stack" id="hgStack"></div>
-    <div class="hg-dots" id="hgDots"></div>
-  </div>
-
   <div class="hero-foot">
     <p class="hero-tag"
        data-ru="Закрываем задачи, дедлайны и цели клиентов. Дизайн, который работает на результат."
@@ -1828,12 +1731,75 @@
                   data-ru-ph="Расскажите о вашем проекте..."
                   data-en-ph="Tell us about your project..."></textarea>
       </div>
+      <div class="fg">
+        <label class="policy-cb-wrap">
+          <input type="checkbox" class="policy-cb" id="policyCheck">
+          <span class="policy-text"
+                data-ru='Я согласен с <a href="#" class="policy-link" id="policyLink">политикой конфиденциальности</a>'
+                data-en='I agree to the <a href="#" class="policy-link" id="policyLink">privacy policy</a>'>
+            Я согласен с <a href="#" class="policy-link" id="policyLink">политикой конфиденциальности</a>
+          </span>
+        </label>
+        <p class="policy-error" id="policyError"
+           data-ru="Необходимо согласие с политикой конфиденциальности"
+           data-en="You must agree to the privacy policy">
+          Необходимо согласие с политикой конфиденциальности
+        </p>
+      </div>
+
       <button type="submit" class="fsub mag-btn"
               data-ru="Отправить заявку →"
               data-en="Send request →">Отправить заявку →</button>
     </form>
   </div>
 </section>
+
+<!-- ===== PRIVACY POLICY MODAL ===== -->
+<div id="policyModal" role="dialog" aria-modal="true" aria-labelledby="pmTitle">
+  <div class="pm-backdrop" id="pmBackdrop"></div>
+  <div class="pm-box">
+    <button class="pm-close" id="pmClose" aria-label="Закрыть">✕</button>
+    <h2 class="pm-title" id="pmTitle"
+        data-ru="Политика конфиденциальности"
+        data-en="Privacy Policy">Политика конфиденциальности</h2>
+    <div class="pm-body">
+      <p data-ru="Настоящая политика конфиденциальности регулирует порядок обработки персональных данных пользователей, оставляющих заявки на сайте дизайн-студии «Арканум»."
+         data-en="This privacy policy governs how personal data is handled for users submitting requests on the Arcanum design studio website.">
+        Настоящая политика конфиденциальности регулирует порядок обработки персональных данных пользователей, оставляющих заявки на сайте дизайн-студии «Арканум».
+      </p>
+
+      <h3 data-ru="1. Какие данные мы собираем" data-en="1. What data we collect">1. Какие данные мы собираем</h3>
+      <p data-ru="При отправке формы мы получаем: имя, адрес электронной почты, номер телефона (при наличии), логин Telegram (при наличии) и текст вашего обращения."
+         data-en="When submitting the form we receive: name, email address, phone number (if provided), Telegram username (if provided) and your message.">
+        При отправке формы мы получаем: имя, адрес электронной почты, номер телефона (при наличии), логин Telegram (при наличии) и текст вашего обращения.
+      </p>
+
+      <h3 data-ru="2. Цели обработки" data-en="2. Purpose of processing">2. Цели обработки</h3>
+      <p data-ru="Данные используются исключительно для связи с вами по вопросу вашего запроса, оценки и согласования условий сотрудничества. Мы не передаём данные третьим лицам и не используем их в маркетинговых рассылках без вашего согласия."
+         data-en="Data is used solely to contact you regarding your request and to discuss cooperation terms. We do not share data with third parties or use it for marketing without your consent.">
+        Данные используются исключительно для связи с вами по вопросу вашего запроса, оценки и согласования условий сотрудничества. Мы не передаём данные третьим лицам и не используем их в маркетинговых рассылках без вашего согласия.
+      </p>
+
+      <h3 data-ru="3. Хранение данных" data-en="3. Data storage">3. Хранение данных</h3>
+      <p data-ru="Контактные данные хранятся на защищённых серверах и удаляются по истечении срока, необходимого для выполнения проекта, либо по вашему запросу."
+         data-en="Contact data is stored on secure servers and deleted after the project period ends or upon your request.">
+        Контактные данные хранятся на защищённых серверах и удаляются по истечении срока, необходимого для выполнения проекта, либо по вашему запросу.
+      </p>
+
+      <h3 data-ru="4. Ваши права" data-en="4. Your rights">4. Ваши права</h3>
+      <p data-ru="Вы вправе в любой момент запросить удаление, изменение или уточнение ваших персональных данных, направив письмо на hello@arcanum.studio."
+         data-en="You may at any time request deletion, correction or clarification of your personal data by emailing hello@arcanum.studio.">
+        Вы вправе в любой момент запросить удаление, изменение или уточнение ваших персональных данных, направив письмо на hello@arcanum.studio.
+      </p>
+
+      <h3 data-ru="5. Согласие" data-en="5. Consent">5. Согласие</h3>
+      <p data-ru="Отправляя форму, вы подтверждаете своё согласие на обработку персональных данных в соответствии с настоящей политикой."
+         data-en="By submitting the form you confirm your consent to the processing of personal data in accordance with this policy.">
+        Отправляя форму, вы подтверждаете своё согласие на обработку персональных данных в соответствии с настоящей политикой.
+      </p>
+    </div>
+  </div>
+</div>
 
 <!-- ===== FOOTER ===== -->
 <footer id="footer">
@@ -1868,31 +1834,41 @@
 /* ================================================
    PORTFOLIO DATA
 ================================================ */
+/* Generated via Magnific AI — realistic portfolio placeholders */
+const IMG = {
+  neuro:    'https://pikaso.cdnpk.net/private/production/4517969369/render.jpg?token=exp=1780963200~hmac=3cfe00bacb37db7b2ebf9a8c8115f245108dc77607d96e082f37236fe8001fdf',
+  market:   'https://pikaso.cdnpk.net/private/production/4517970790/render.png?token=exp=1780963200~hmac=ec5585281e6799cf5a5fbdff99dd3a9669cff7186cf2a168dbfae841ebed50ba',
+  digital:  'https://pikaso.cdnpk.net/private/production/4517971620/render.png?token=exp=1780963200~hmac=3c3547456f7b9bcff7c9e82b2cb07e9b1d7eea8652de1de06572a73a06a65a07',
+  web:      'https://pikaso.cdnpk.net/private/production/4517971933/render.png?token=exp=1780963200~hmac=61873c4bf5e67e566f264322fb1e964291b81447766dde3c92ca53b517da0f13',
+  brand:    'https://pikaso.cdnpk.net/private/production/4517972591/render.png?token=exp=1780963200~hmac=698088fb70de146582d682b0922761d7233e21f745e3f3453e7994b9c4ceaaa5',
+  neuroArt: 'https://pikaso.cdnpk.net/private/production/4517971848/render.jpg?token=exp=1780963200~hmac=3cc6c3242fc5f9bc1e72eb2c6ad3068bc3355edac67679e31582966ee3d06c97',
+};
+
 const PORTFOLIO = [
-  { id:1,  ru:'Лесная магия',            en:'Forest Magic',          niche:'neuro',       author:'alena',  aName:'Алёна',
-    bg:'linear-gradient(145deg,#1a0a3d,#0d4a3a)', sim:'linear-gradient(45deg,#1a0a3d,#0d6b4a,#38ef7d)' },
-  { id:2,  ru:'Карточки WB: косметика',  en:'WB Cards: Cosmetics',   niche:'marketplace', author:'alena',  aName:'Алёна',
-    bg:'linear-gradient(145deg,#3a0d20,#8b1a4a)', sim:'linear-gradient(45deg,#f093fb,#f5576c,#fd746c)' },
-  { id:3,  ru:'SMM для бренда одежды',   en:'SMM for Fashion Brand', niche:'digital',     author:'alena',  aName:'Алёна',
-    bg:'linear-gradient(145deg,#0a1a3d,#0d3a6b)', sim:'linear-gradient(45deg,#4facfe,#00f2fe,#a8ff78)' },
-  { id:4,  ru:'Лендинг фитнес-студии',   en:'Fitness Studio Landing',niche:'web',         author:'alena',  aName:'Алёна',
-    bg:'linear-gradient(145deg,#0a3d1a,#1a6b3a)', sim:'linear-gradient(45deg,#43e97b,#38f9d7,#fa709a)' },
-  { id:5,  ru:'Карточки Ozon: электроника',en:'Ozon: Electronics',   niche:'marketplace', author:'alena',  aName:'Алёна',
-    bg:'linear-gradient(145deg,#0a0d2e,#1a1a5e)', sim:'linear-gradient(45deg,#0f3460,#533483,#e94560)' },
-  { id:6,  ru:'Web для ресторана',        en:'Restaurant Website',   niche:'web',         author:'alena',  aName:'Алёна',
-    bg:'linear-gradient(145deg,#3d1a00,#6b3a0d)', sim:'linear-gradient(45deg,#f7971e,#ffd200,#ff6b6b)' },
-  { id:7,  ru:'AI Фэшн лукбук',          en:'AI Fashion Lookbook',   niche:'neuro',       author:'nikita', aName:'Никита',
-    bg:'linear-gradient(145deg,#1a0d3d,#3d1a6b)', sim:'linear-gradient(45deg,#667eea,#764ba2,#f093fb)' },
-  { id:8,  ru:'Нейро-портреты',          en:'Neural Portraits',      niche:'neuro',       author:'nikita', aName:'Никита',
-    bg:'linear-gradient(145deg,#0d0d1e,#1a1040)', sim:'linear-gradient(45deg,#e94560,#533483,#c8c3ff)' },
-  { id:9,  ru:'AI Видео-реклама',        en:'AI Video Ad',           niche:'digital',     author:'nikita', aName:'Никита',
-    bg:'linear-gradient(145deg,#3d1500,#6b2000)', sim:'linear-gradient(45deg,#ff6b6b,#feca57,#ff9ff3)' },
-  { id:10, ru:'AI Брендинг',             en:'AI Branding',           niche:'brand',       author:'nikita', aName:'Никита',
-    bg:'linear-gradient(145deg,#1a2a3d,#2a3a5e)', sim:'linear-gradient(45deg,#a8edea,#fed6e3,#c8c3ff)' },
-  { id:11, ru:'Нейро-арт для интерьера', en:'Neural Art for Interior',niche:'neuro',      author:'nikita', aName:'Никита',
-    bg:'linear-gradient(145deg,#0a1a3d,#1a0a6b)', sim:'linear-gradient(45deg,#30cfd0,#330867,#c8c3ff)' },
-  { id:12, ru:'Айдентика бренда',        en:'Brand Identity',        niche:'brand',       author:'alena',  aName:'Алёна',
-    bg:'linear-gradient(145deg,#1a2e2e,#0d3040)', sim:'linear-gradient(45deg,#2c3e50,#4ca1af,#c8c3ff)' },
+  { id:1,  ru:'Лесная магия',              en:'Forest Magic',           niche:'neuro',       author:'alena',  aName:'Алёна',
+    img: IMG.neuro,   bg:'linear-gradient(145deg,#1a0a3d,#0d4a3a)', sim:'linear-gradient(45deg,#1a0a3d,#0d6b4a,#38ef7d)' },
+  { id:2,  ru:'Карточки WB: косметика',    en:'WB Cards: Cosmetics',    niche:'marketplace', author:'alena',  aName:'Алёна',
+    img: IMG.market,  bg:'linear-gradient(145deg,#3a0d20,#8b1a4a)', sim:'linear-gradient(45deg,#f093fb,#f5576c,#fd746c)' },
+  { id:3,  ru:'SMM для бренда одежды',     en:'SMM for Fashion Brand',  niche:'digital',     author:'alena',  aName:'Алёна',
+    img: IMG.digital, bg:'linear-gradient(145deg,#0a1a3d,#0d3a6b)', sim:'linear-gradient(45deg,#4facfe,#00f2fe,#a8ff78)' },
+  { id:4,  ru:'Лендинг фитнес-студии',     en:'Fitness Studio Landing', niche:'web',         author:'alena',  aName:'Алёна',
+    img: IMG.web,     bg:'linear-gradient(145deg,#0a3d1a,#1a6b3a)', sim:'linear-gradient(45deg,#43e97b,#38f9d7,#fa709a)' },
+  { id:5,  ru:'Карточки Ozon: электроника',en:'Ozon: Electronics',      niche:'marketplace', author:'alena',  aName:'Алёна',
+    img: IMG.market,  bg:'linear-gradient(145deg,#0a0d2e,#1a1a5e)', sim:'linear-gradient(45deg,#0f3460,#533483,#e94560)' },
+  { id:6,  ru:'Web для ресторана',          en:'Restaurant Website',    niche:'web',         author:'alena',  aName:'Алёна',
+    img: IMG.web,     bg:'linear-gradient(145deg,#3d1a00,#6b3a0d)', sim:'linear-gradient(45deg,#f7971e,#ffd200,#ff6b6b)' },
+  { id:7,  ru:'AI Фэшн лукбук',            en:'AI Fashion Lookbook',    niche:'neuro',       author:'nikita', aName:'Никита',
+    img: IMG.neuro,   bg:'linear-gradient(145deg,#1a0d3d,#3d1a6b)', sim:'linear-gradient(45deg,#667eea,#764ba2,#f093fb)' },
+  { id:8,  ru:'Нейро-портреты',            en:'Neural Portraits',       niche:'neuro',       author:'nikita', aName:'Никита',
+    img: IMG.neuroArt,bg:'linear-gradient(145deg,#0d0d1e,#1a1040)', sim:'linear-gradient(45deg,#e94560,#533483,#c8c3ff)' },
+  { id:9,  ru:'AI Видео-реклама',          en:'AI Video Ad',            niche:'digital',     author:'nikita', aName:'Никита',
+    img: IMG.digital, bg:'linear-gradient(145deg,#3d1500,#6b2000)', sim:'linear-gradient(45deg,#ff6b6b,#feca57,#ff9ff3)' },
+  { id:10, ru:'AI Брендинг',               en:'AI Branding',            niche:'brand',       author:'nikita', aName:'Никита',
+    img: IMG.brand,   bg:'linear-gradient(145deg,#1a2a3d,#2a3a5e)', sim:'linear-gradient(45deg,#a8edea,#fed6e3,#c8c3ff)' },
+  { id:11, ru:'Нейро-арт для интерьера',   en:'Neural Art for Interior',niche:'neuro',       author:'nikita', aName:'Никита',
+    img: IMG.neuroArt,bg:'linear-gradient(145deg,#0a1a3d,#1a0a6b)', sim:'linear-gradient(45deg,#30cfd0,#330867,#c8c3ff)' },
+  { id:12, ru:'Айдентика бренда',          en:'Brand Identity',         niche:'brand',       author:'alena',  aName:'Алёна',
+    img: IMG.brand,   bg:'linear-gradient(145deg,#1a2e2e,#0d3040)', sim:'linear-gradient(45deg,#2c3e50,#4ca1af,#c8c3ff)' },
 ];
 
 const NICHE_LABELS = {
@@ -1924,7 +1900,9 @@ function renderCards() {
 
   track.innerHTML = items.map(p => `
     <div class="pf-card" data-author="${p.author}" data-niche="${p.niche}">
-      <div class="card-bg" style="background:${p.bg}"></div>
+      <div class="card-bg" style="${p.img ? `background:${p.bg};` : `background:${p.bg};`}">
+        ${p.img ? `<img src="${p.img}" alt="${p.ru}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .6s ease;" onload="this.style.opacity='1'">` : ''}
+      </div>
       <div class="card-vid" style="background:${p.sim};background-size:300% 300%;"></div>
       <div class="card-ov"></div>
       <div class="card-shimmer"></div>
@@ -2239,10 +2217,12 @@ document.querySelectorAll('.lang-btn').forEach(btn => {
     document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('on'));
     btn.classList.add('on');
 
-    /* Text nodes */
+    /* Text nodes (use innerHTML for elements containing markup) */
     document.querySelectorAll(`[data-${lang}]`).forEach(el => {
       const val = el.getAttribute(`data-${lang}`);
-      if (val !== null) el.textContent = val;
+      if (val === null) return;
+      if (val.includes('<')) el.innerHTML = val;
+      else el.textContent = val;
     });
 
     /* Placeholders */
@@ -2273,21 +2253,73 @@ function closeMobNav() {
 }
 
 /* ================================================
-   CONTACT FORM
+   CONTACT FORM + PRIVACY POLICY
 ================================================ */
-document.getElementById('ctForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  const btn = this.querySelector('.fsub');
-  btn.textContent = activeLang === 'ru' ? 'Отправлено ✓' : 'Sent ✓';
-  btn.style.background = '#43e97b';
-  btn.disabled = true;
-  setTimeout(() => {
-    btn.textContent = activeLang === 'ru' ? 'Отправить заявку →' : 'Send request →';
-    btn.style.background = '';
-    btn.disabled = false;
-    this.reset();
-  }, 3500);
-});
+(function() {
+  const form        = document.getElementById('ctForm');
+  const policyCheck = document.getElementById('policyCheck');
+  const policyError = document.getElementById('policyError');
+  const modal       = document.getElementById('policyModal');
+  const pmClose     = document.getElementById('pmClose');
+  const pmBackdrop  = document.getElementById('pmBackdrop');
+
+  /* --- Policy link opens modal --- */
+  document.addEventListener('click', e => {
+    if (e.target.id === 'policyLink' || e.target.closest('#policyLink')) {
+      e.preventDefault();
+      openModal();
+    }
+  });
+
+  function openModal() {
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    modal.querySelector('.pm-box').scrollTop = 0;
+  }
+  function closeModal() {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  pmClose.addEventListener('click', closeModal);
+  pmBackdrop.addEventListener('click', closeModal);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+  });
+
+  /* --- Checkbox clears error on check --- */
+  policyCheck.addEventListener('change', () => {
+    if (policyCheck.checked) {
+      policyCheck.classList.remove('error');
+      policyError.classList.remove('show');
+    }
+  });
+
+  /* --- Form submit with policy validation --- */
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    if (!policyCheck.checked) {
+      policyCheck.classList.add('error');
+      policyError.classList.add('show');
+      policyCheck.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    const btn = this.querySelector('.fsub');
+    btn.textContent = activeLang === 'ru' ? 'Отправлено ✓' : 'Sent ✓';
+    btn.style.background = '#43e97b';
+    btn.disabled = true;
+
+    setTimeout(() => {
+      btn.textContent = activeLang === 'ru' ? 'Отправить заявку →' : 'Send request →';
+      btn.style.background = '';
+      btn.disabled = false;
+      this.reset();
+      policyCheck.checked = false;
+    }, 3500);
+  });
+})();
 
 /* ================================================
    GHOST — peek from М, dock, chat bubbles
@@ -3329,206 +3361,6 @@ renderCards();
 
     requestAnimationFrame(tick);
   })();
-})();
-
-/* ================================================
-   HERO GALLERY — stacked portfolio preview
-   Inspired by MCP Magic StackedCardsInteraction pattern
-================================================ */
-(function() {
-  const stack   = document.getElementById('hgStack');
-  const dotsEl  = document.getElementById('hgDots');
-  const gallery = document.getElementById('heroGallery');
-  if (!stack || !gallery) return;
-
-  const NICHE_LABELS_G = {
-    neuro:'Нейрофото', marketplace:'Маркетплейс',
-    digital:'Digital', web:'Web', brand:'Брендинг'
-  };
-
-  // Pick N unique random items from PORTFOLIO
-  function pickRandom(n) {
-    const pool = [...PORTFOLIO];
-    const out  = [];
-    while (out.length < n && pool.length) {
-      const i = Math.floor(Math.random() * pool.length);
-      out.push(pool.splice(i, 1)[0]);
-    }
-    return out;
-  }
-
-  // Stack + spread positions scale with card width
-  function getPositions() {
-    const w = stack.offsetWidth || 240;
-    const u = w * 0.09;   // ~9% of card width for stack offset
-    const s = w * 0.28;   // ~28% of card width for spread
-    return {
-      stack: [
-        { x:  0,     y:  0,      rot:  0,   scale: 1,    z: 3 },
-        { x: -u,     y:  u*.7,   rot: -6,   scale: .96,  z: 2 },
-        { x: -u*1.9, y:  u*1.3,  rot: -12,  scale: .92,  z: 1 },
-      ],
-      spread: [
-        { x:  s,   y: -u,   rot:  9,   scale: 1.04, z: 3 },
-        { x:  0,   y:  u*.5, rot:  0,   scale: 1,    z: 2 },
-        { x: -s,   y:  u,   rot: -9,   scale: .96,  z: 1 },
-      ],
-    };
-  }
-
-  let cards    = [];
-  let items    = [];
-  let hovered  = false;
-  let activeIdx = 0;    // which "set" of 3 we're on (for dots)
-  let cycleTimer;
-  const TOTAL_SETS = 4; // how many dot positions to show
-
-  function applyPos(cardEl, pos, instant) {
-    const t = instant ? 'none' : 'transform .65s cubic-bezier(0.23,1,0.32,1), box-shadow .65s cubic-bezier(0.23,1,0.32,1)';
-    cardEl.style.transition = t;
-    cardEl.style.zIndex     = pos.z;
-    cardEl.style.transform  = `translate(${pos.x}px, ${pos.y}px) rotate(${pos.rot}deg) scale(${pos.scale})`;
-  }
-
-  function buildCard(item, idx) {
-    const el = document.createElement('div');
-    el.className = 'hg-card';
-    el.innerHTML = `
-      <div class="hg-bg" style="background:${item.sim};background-size:300% 300%;"></div>
-      <div class="hg-ov"></div>
-      <div class="hg-sheen"></div>
-      <div class="hg-info">
-        <div class="hg-tag">${NICHE_LABELS_G[item.niche] || item.niche}</div>
-        <div class="hg-title">${item.ru}</div>
-        <div class="hg-author">${item.aName}</div>
-      </div>`;
-    applyPos(el, getPositions().stack[idx], true);
-    return el;
-  }
-
-  function buildDots() {
-    dotsEl.innerHTML = '';
-    for (let i = 0; i < TOTAL_SETS; i++) {
-      const d = document.createElement('div');
-      d.className = 'hg-dot' + (i === activeIdx ? ' on' : '');
-      dotsEl.appendChild(d);
-    }
-  }
-
-  function updateDots() {
-    dotsEl.querySelectorAll('.hg-dot').forEach((d, i) => {
-      d.classList.toggle('on', i === activeIdx);
-    });
-  }
-
-  function initGallery() {
-    items = pickRandom(3);
-    stack.innerHTML = '';
-    cards = items.map((item, i) => {
-      const el = buildCard(item, i);
-      stack.appendChild(el);
-      return el;
-    });
-    buildDots();
-
-    const pos = getPositions();
-    cards.forEach((el, i) => {
-      el.style.opacity = '0';
-      setTimeout(() => {
-        el.style.transition = 'transform .65s cubic-bezier(0.23,1,0.32,1), opacity .5s ease';
-        el.style.opacity = '1';
-        applyPos(el, pos.stack[i], false);
-      }, 80 + i * 70);
-    });
-  }
-
-  function cycleTo() {
-    activeIdx = (activeIdx + 1) % TOTAL_SETS;
-    const newItems = pickRandom(3);
-    const pos = getPositions();
-
-    cards.forEach((el, i) => {
-      el.style.transition = 'transform .45s cubic-bezier(0.76,0,0.24,1), opacity .35s ease';
-      el.style.opacity   = '0';
-      el.style.transform = `translate(${pos.stack[i].x}px, ${pos.stack[i].y + 30}px) rotate(${pos.stack[i].rot}deg) scale(${pos.stack[i].scale})`;
-    });
-
-    setTimeout(() => {
-      items = newItems;
-      stack.innerHTML = '';
-      cards = items.map((item, i) => {
-        const el = buildCard(item, i);
-        el.style.opacity = '0';
-        stack.appendChild(el);
-        return el;
-      });
-      const p2 = getPositions();
-      cards.forEach((el, i) => {
-        setTimeout(() => {
-          el.style.transition = 'transform .65s cubic-bezier(0.23,1,0.32,1), opacity .5s ease';
-          el.style.opacity = '1';
-          applyPos(el, hovered ? p2.spread[i] : p2.stack[i], false);
-        }, i * 70);
-      });
-      updateDots();
-    }, 400);
-  }
-
-  function startCycle() {
-    clearInterval(cycleTimer);
-    cycleTimer = setInterval(cycleTo, 3200);
-  }
-
-  function bindHover() {
-    gallery.addEventListener('mouseenter', onEnter);
-    gallery.addEventListener('mouseleave', onLeave);
-  }
-
-  function onEnter() {
-    hovered = true;
-    clearInterval(cycleTimer);
-    const pos = getPositions();
-    cards.forEach((el, i) => applyPos(el, pos.spread[i], false));
-  }
-
-  function onLeave() {
-    hovered = false;
-    const pos = getPositions();
-    cards.forEach((el, i) => applyPos(el, pos.stack[i], false));
-    startCycle();
-  }
-
-  // On resize: re-apply current positions so cards don't drift
-  window.addEventListener('resize', () => {
-    if (!cards.length) return;
-    const pos = getPositions();
-    cards.forEach((el, i) => applyPos(el, hovered ? pos.spread[i] : pos.stack[i], true));
-  });
-
-  // Wait until PORTFOLIO is defined and page loaded
-  function tryInit() {
-    if (typeof PORTFOLIO === 'undefined' || !PORTFOLIO.length) {
-      setTimeout(tryInit, 100);
-      return;
-    }
-    initGallery();
-    bindHover();
-
-    // Reveal gallery after preloader
-    gallery.style.opacity = '0';
-    gallery.style.transition = 'opacity .8s ease';
-    const waitBody = setInterval(() => {
-      if (!document.body.classList.contains('loading')) {
-        clearInterval(waitBody);
-        setTimeout(() => {
-          gallery.style.opacity = '1';
-          startCycle();
-        }, 600);
-      }
-    }, 100);
-  }
-
-  tryInit();
 })();
 
 /* ================================================
