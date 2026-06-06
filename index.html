@@ -591,98 +591,129 @@
       padding: 9rem 3rem;
       background: var(--oat);
     }
+    /* ── About section ── */
+    #about { padding: 8rem 3rem; }
+    .about-inner { max-width: 1200px; margin: 0 auto; }
+
+    /* Top grid: text left / team right */
     .about-grid {
-      max-width: 1200px; margin: 0 auto;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-      align-items: center;
+      gap: 5rem;
+      align-items: start;
+      margin-bottom: 4.5rem;
     }
+
+    /* Shared labels / headings */
     .sec-lbl {
-      font-size: .68rem;
-      letter-spacing: .28em;
-      text-transform: uppercase;
-      color: var(--indigo-deep);
-      margin-bottom: 1.25rem;
+      font-size: .65rem; letter-spacing: .28em; text-transform: uppercase;
+      color: var(--indigo-deep); margin-bottom: 1.25rem;
     }
     .sec-h2 {
       font-family: var(--font-h);
-      font-size: clamp(1.75rem, 3.5vw, 3rem);
-      font-weight: 700;
-      line-height: 1.1;
-      letter-spacing: -.02em;
+      font-size: clamp(1.85rem, 3.6vw, 3.25rem);
+      font-weight: 700; line-height: 1.08; letter-spacing: -.025em;
     }
     .sec-h2 em { font-style: normal; color: var(--indigo-deep); }
     .about-body {
-      font-size: 1.0625rem;
-      line-height: 1.75;
-      color: var(--muted);
-      margin-top: 1.25rem;
-      margin-bottom: 2.5rem;
+      font-size: 1rem; line-height: 1.8; color: var(--muted);
+      margin-top: 1.25rem; margin-bottom: 1.75rem;
     }
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
+
+    /* Perks list */
+    .about-perks {
+      list-style: none;
+      display: grid; grid-template-columns: 1fr 1fr; gap: .55rem .5rem;
     }
+    .about-perks li {
+      font-size: .82rem; color: var(--dark); display: flex;
+      align-items: flex-start; gap: .5rem; line-height: 1.4; opacity: .75;
+    }
+    .about-perks li::before {
+      content: '✦'; color: var(--indigo-deep);
+      font-size: .55rem; margin-top: .22rem; flex-shrink: 0;
+    }
+
+    /* Stats strip — full-width, editorial */
+    .about-stats {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid rgba(20,18,30,.1);
+    }
+    .about-stat {
+      padding: 2.25rem 2.5rem;
+      border-right: 1px solid rgba(20,18,30,.08);
+      position: relative;
+    }
+    .about-stat:first-child { padding-left: 0; }
+    .about-stat:last-child  { border-right: none; }
+
     .stat-n {
       font-family: var(--font-h);
-      font-size: clamp(2rem, 3.5vw, 2.75rem);
-      font-weight: 900;
-      line-height: 1;
+      font-size: clamp(2.5rem, 4vw, 3.5rem);
+      font-weight: 900; line-height: 1;
     }
-    .stat-n sup { color: var(--indigo-deep); }
+    .stat-n sup { color: var(--indigo-deep); font-size: .5em; vertical-align: super; }
     .stat-l {
-      font-size: .8rem;
-      color: var(--muted);
-      margin-top: .4rem;
-      line-height: 1.4;
+      font-size: .78rem; color: var(--muted);
+      margin-top: .5rem; line-height: 1.4;
     }
+
+    /* Team cards — redesigned */
     .team-cards {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.25rem;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
     }
     .tc {
-      border-radius: 1.5rem;
-      padding: 2rem 1.75rem;
-      position: relative;
-      overflow: hidden;
-      aspect-ratio: 3/4.2;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
+      border-radius: 1.5rem; padding: 1.75rem;
+      position: relative; overflow: hidden;
+      display: flex; flex-direction: column; justify-content: space-between;
+      min-height: 320px;
+      transition: transform .45s var(--ease-out), box-shadow .45s var(--ease-out);
     }
-    .tc-a { background: var(--indigo); }
-    .tc-n { background: var(--dark-2); margin-top: 2.5rem; }
-    .tc-letter {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%,-50%);
-      font-family: var(--font-h);
-      font-size: 8rem;
-      font-weight: 900;
-      opacity: .08;
-      line-height: 1;
-      user-select: none;
+    .tc:hover { transform: translateY(-6px); box-shadow: 0 24px 56px rgba(20,18,30,.16); }
+
+    /* Gradient mesh backgrounds */
+    .tc-a {
+      background: linear-gradient(140deg, #ccc8ff 0%, #b8b2ff 45%, #9890f5 100%);
     }
+    .tc-n {
+      background: linear-gradient(140deg, #1e1b2e 0%, #252040 55%, #1a1735 100%);
+      margin-top: 2rem;
+    }
+
+    /* Large initial — decorative */
+    .tc-initial {
+      font-family: var(--font-h); font-size: 7rem; font-weight: 900;
+      line-height: 1; user-select: none; letter-spacing: -.04em;
+      position: absolute; top: 1rem; right: 1.25rem;
+    }
+    .tc-a .tc-initial { color: rgba(20,18,30,.08); }
+    .tc-n .tc-initial { color: rgba(200,195,255,.1); }
+
+    /* Info block */
+    .tc-info { position: relative; z-index: 1; }
     .tc-name {
-      font-family: var(--font-h);
-      font-size: 1.25rem;
-      font-weight: 700;
-      position: relative;
-      z-index: 1;
+      font-family: var(--font-h); font-size: 1.375rem; font-weight: 700;
+      margin-bottom: .25rem;
     }
     .tc-a .tc-name { color: var(--dark); }
     .tc-n .tc-name { color: var(--oat); }
     .tc-role {
-      font-size: .8rem;
-      margin-top: .3rem;
-      position: relative;
-      z-index: 1;
+      font-size: .78rem; margin-bottom: 1.1rem; letter-spacing: .02em;
     }
-    .tc-a .tc-role { color: var(--dark-2); opacity: .65; }
+    .tc-a .tc-role { color: rgba(20,18,30,.55); }
     .tc-n .tc-role { color: var(--indigo); }
+
+    /* Skill tags */
+    .tc-skills { display: flex; flex-wrap: wrap; gap: .35rem; }
+    .tc-skill {
+      font-size: .6rem; letter-spacing: .07em; text-transform: uppercase;
+      padding: .22rem .65rem; border-radius: 100px; font-weight: 600;
+    }
+    .tc-a .tc-skill { background: rgba(20,18,30,.1); color: rgba(20,18,30,.65); }
+    .tc-n .tc-skill {
+      background: rgba(200,195,255,.08); color: var(--indigo);
+      border: 1px solid rgba(200,195,255,.2);
+    }
 
     /* ================================================
        PORTFOLIO
@@ -1393,6 +1424,7 @@
     ================================================ */
     @media (max-width: 1024px) {
       .about-grid, .ct-inner { grid-template-columns: 1fr; gap: 3rem; }
+      .about-stats { grid-template-columns: repeat(3,1fr); }
       .tst-grid { grid-template-columns: 1fr 1fr; }
     }
 
@@ -1400,7 +1432,8 @@
       #hdr { padding: 1.25rem 1.5rem; }
       .hdr-nav { display: none; }
       .menu-toggle { display: flex; }
-      #hero, #about, #services, #testimonials, #contact { padding-left: 1.5rem; padding-right: 1.5rem; }
+      #hero, #services, #testimonials, #contact { padding-left: 1.5rem; padding-right: 1.5rem; }
+      #about { padding: 5rem 1.5rem; }
       .hero-foot { left: 1.5rem; right: 1.5rem; }
       .pf-hdr { padding: 0 1.5rem; }
       .pf-scroll { padding-left: 1.5rem; padding-right: 1.5rem; }
@@ -1408,7 +1441,12 @@
       .svc-row { grid-template-columns: 52px 1fr 44px; gap: 1rem; }
       .svc-row:hover { margin: 0 -1.5rem; padding: 1.875rem 1.5rem; }
       .pf-card { width: 72vw; }
-      .stats { grid-template-columns: 1fr 1fr 1fr; }
+      .about-stats { grid-template-columns: 1fr; border-top: none; }
+      .about-stat { padding: 1.25rem 0; border-right: none; border-top: 1px solid rgba(20,18,30,.1); }
+      .about-stat:first-child { border-top: 1px solid rgba(20,18,30,.1); }
+      .about-perks { grid-template-columns: 1fr; }
+      .team-cards { grid-template-columns: 1fr 1fr; }
+      .tc { min-height: 260px; }
       #footer { padding: 2rem 1.5rem; flex-direction: column; gap: 1rem; text-align: center; }
     }
 
@@ -1711,47 +1749,79 @@
 
 <!-- ===== ABOUT ===== -->
 <section id="about">
-  <div class="about-grid">
-    <div>
-      <p class="sec-lbl rv" data-ru="О студии" data-en="About studio">О студии</p>
-      <h2 class="sec-h2 rv">
-        <span data-ru="Небольшое бюро," data-en="Small bureau,">Небольшое бюро,</span><br>
-        <em data-ru="большие" data-en="big">большие</em>
-        <span data-ru=" результаты" data-en=" results"> результаты</span>
-      </h2>
-      <p class="about-body rv"
-         data-ru="Арканум — дизайн-студия с максимальной клиентоориентированностью. Мы закрываем все задачи: от нейрофотосессий до веб-дизайна. Алёна и Никита — два специалиста, одна команда. Ваш дедлайн — наш приоритет."
-         data-en="Arcanum is a design studio with maximum client focus. We cover all tasks: from AI photo shoots to web design. Alena and Nikita — two specialists, one team. Your deadline is our priority.">
-        Арканум — дизайн-студия с максимальной клиентоориентированностью. Мы закрываем все задачи: от нейрофотосессий до веб-дизайна. Алёна и Никита — два специалиста, одна команда. Ваш дедлайн — наш приоритет.
-      </p>
-      <div class="stats">
-        <div class="rv">
-          <div class="stat-n">50<sup>+</sup></div>
-          <div class="stat-l" data-ru="проектов выполнено" data-en="projects done">проектов выполнено</div>
+  <div class="about-inner">
+
+    <!-- Top: text left / team right -->
+    <div class="about-grid">
+
+      <!-- Left column -->
+      <div>
+        <p class="sec-lbl rv" data-ru="О студии" data-en="About studio">О студии</p>
+        <h2 class="sec-h2 rv">
+          <span data-ru="Небольшое бюро," data-en="Small bureau,">Небольшое бюро,</span><br>
+          <em data-ru="большие" data-en="big">большие</em>
+          <span data-ru=" результаты" data-en=" results"> результаты</span>
+        </h2>
+        <p class="about-body rv"
+           data-ru="Арканум — дизайн-студия полного цикла. Нейрофотосессии, веб, digital и брендинг — закрываем любые задачи в срок. Работаем быстро, честно и на результат."
+           data-en="Arcanum is a full-cycle design studio. AI photo, web, digital and branding — we handle any task on time. Fast, honest, result-driven.">
+          Арканум — дизайн-студия полного цикла. Нейрофотосессии, веб, digital и брендинг — закрываем любые задачи в срок. Работаем быстро, честно и на результат.
+        </p>
+        <ul class="about-perks rv">
+          <li data-ru="Фиксированные сроки" data-en="Fixed deadlines">Фиксированные сроки</li>
+          <li data-ru="Правки включены" data-en="Revisions included">Правки включены</li>
+          <li data-ru="Полная обратная связь" data-en="Full feedback">Полная обратная связь</li>
+          <li data-ru="Один менеджер на проект" data-en="One manager per project">Один менеджер на проект</li>
+        </ul>
+      </div>
+
+      <!-- Right column: team cards -->
+      <div class="team-cards rv">
+        <div class="tc tc-a">
+          <div class="tc-initial" aria-hidden="true">А</div>
+          <div class="tc-info">
+            <div class="tc-name" data-ru="Алёна" data-en="Alena">Алёна</div>
+            <div class="tc-role" data-ru="Дизайнер" data-en="Designer">Дизайнер</div>
+            <div class="tc-skills">
+              <span class="tc-skill">Figma</span>
+              <span class="tc-skill">Illustrator</span>
+              <span class="tc-skill">Canva</span>
+              <span class="tc-skill">Photoshop</span>
+            </div>
+          </div>
         </div>
-        <div class="rv">
-          <div class="stat-n">2<sup>★</sup></div>
-          <div class="stat-l" data-ru="специалиста" data-en="specialists">специалиста</div>
-        </div>
-        <div class="rv">
-          <div class="stat-n">0<sup>%</sup></div>
-          <div class="stat-l" data-ru="сорванных дедлайнов" data-en="missed deadlines">сорванных дедлайнов</div>
+        <div class="tc tc-n">
+          <div class="tc-initial" aria-hidden="true">Н</div>
+          <div class="tc-info">
+            <div class="tc-name" data-ru="Никита" data-en="Nikita">Никита</div>
+            <div class="tc-role" data-ru="AI Креатор" data-en="AI Creator">AI Креатор</div>
+            <div class="tc-skills">
+              <span class="tc-skill">Midjourney</span>
+              <span class="tc-skill">Kling AI</span>
+              <span class="tc-skill">Sora</span>
+              <span class="tc-skill">ChatGPT</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="team-cards rv">
-      <div class="tc tc-a">
-        <div class="tc-letter">А</div>
-        <div class="tc-name" data-ru="Алёна" data-en="Alena">Алёна</div>
-        <div class="tc-role" data-ru="Дизайнер" data-en="Designer">Дизайнер</div>
+    <!-- Stats strip: full-width editorial row -->
+    <div class="about-stats">
+      <div class="about-stat rv">
+        <div class="stat-n">50<sup>+</sup></div>
+        <div class="stat-l" data-ru="проектов выполнено" data-en="projects completed">проектов выполнено</div>
       </div>
-      <div class="tc tc-n">
-        <div class="tc-letter">Н</div>
-        <div class="tc-name" data-ru="Никита" data-en="Nikita">Никита</div>
-        <div class="tc-role" data-ru="AI Креатор" data-en="AI Creator">AI Креатор</div>
+      <div class="about-stat rv">
+        <div class="stat-n">24<sup>ч</sup></div>
+        <div class="stat-l" data-ru="максимум до ответа" data-en="max response time">максимум до ответа</div>
+      </div>
+      <div class="about-stat rv">
+        <div class="stat-n">0<sup>%</sup></div>
+        <div class="stat-l" data-ru="сорванных дедлайнов" data-en="missed deadlines">сорванных дедлайнов</div>
       </div>
     </div>
+
   </div>
 </section>
 
