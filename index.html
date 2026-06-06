@@ -658,61 +658,83 @@
       margin-top: .5rem; line-height: 1.4;
     }
 
-    /* Team cards — redesigned */
-    .team-cards {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
-    }
+    /* Team cards — photo version */
+    .team-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
     .tc {
       border-radius: 1.5rem; padding: 1.75rem;
       position: relative; overflow: hidden;
-      display: flex; flex-direction: column; justify-content: space-between;
-      min-height: 320px;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      min-height: 380px; cursor: none;
+      background: var(--dark-2);
       transition: transform .45s var(--ease-out), box-shadow .45s var(--ease-out);
     }
-    .tc:hover { transform: translateY(-6px); box-shadow: 0 24px 56px rgba(20,18,30,.16); }
+    .tc:hover { transform: translateY(-8px); box-shadow: 0 28px 60px rgba(20,18,30,.28); }
+    .tc-n { margin-top: 2rem; }
 
-    /* Gradient mesh backgrounds */
-    .tc-a {
-      background: linear-gradient(140deg, #ccc8ff 0%, #b8b2ff 45%, #9890f5 100%);
+    /* Portrait photo */
+    .tc-photo {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center top;
+      opacity: 0; transition: opacity .7s ease;
     }
-    .tc-n {
-      background: linear-gradient(140deg, #1e1b2e 0%, #252040 55%, #1a1735 100%);
-      margin-top: 2rem;
+    .tc-photo.loaded { opacity: 1; }
+
+    /* Dark gradient overlay for text readability */
+    .tc-overlay {
+      position: absolute; inset: 0; z-index: 1;
+      background: linear-gradient(to top,
+        rgba(14,12,26,.97) 0%,
+        rgba(14,12,26,.6)  45%,
+        rgba(14,12,26,.12) 100%);
     }
 
-    /* Large initial — decorative */
+    /* Hover glow at top */
+    .tc::before {
+      content: ''; position: absolute; inset: 0; z-index: 2;
+      background: linear-gradient(to bottom, rgba(200,195,255,.1) 0%, transparent 40%);
+      opacity: 0; transition: opacity .4s;
+    }
+    .tc:hover::before { opacity: 1; }
+
+    /* Pill hint on hover */
+    .tc-hint {
+      position: absolute; top: 1.25rem; left: 50%; z-index: 4;
+      transform: translateX(-50%) translateY(-6px);
+      background: rgba(200,195,255,.12);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(200,195,255,.28);
+      border-radius: 100px; padding: .32rem 1rem;
+      font-size: .6rem; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--indigo); white-space: nowrap;
+      opacity: 0; transition: opacity .3s, transform .3s var(--ease-out);
+      pointer-events: none;
+    }
+    .tc:hover .tc-hint { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* Decorative initial */
     .tc-initial {
-      font-family: var(--font-h); font-size: 7rem; font-weight: 900;
+      position: absolute; top: .5rem; right: 1rem; z-index: 3;
+      font-family: var(--font-h); font-size: 5.5rem; font-weight: 900;
       line-height: 1; user-select: none; letter-spacing: -.04em;
-      position: absolute; top: 1rem; right: 1.25rem;
+      color: rgba(200,195,255,.1);
     }
-    .tc-a .tc-initial { color: rgba(20,18,30,.08); }
-    .tc-n .tc-initial { color: rgba(200,195,255,.1); }
 
-    /* Info block */
-    .tc-info { position: relative; z-index: 1; }
+    /* Info */
+    .tc-info { position: relative; z-index: 3; }
     .tc-name {
       font-family: var(--font-h); font-size: 1.375rem; font-weight: 700;
-      margin-bottom: .25rem;
+      color: var(--oat); margin-bottom: .25rem;
     }
-    .tc-a .tc-name { color: var(--dark); }
-    .tc-n .tc-name { color: var(--oat); }
-    .tc-role {
-      font-size: .78rem; margin-bottom: 1.1rem; letter-spacing: .02em;
-    }
-    .tc-a .tc-role { color: rgba(20,18,30,.55); }
-    .tc-n .tc-role { color: var(--indigo); }
+    .tc-role { font-size: .78rem; color: var(--indigo); margin-bottom: 1rem; letter-spacing: .02em; }
 
-    /* Skill tags */
     .tc-skills { display: flex; flex-wrap: wrap; gap: .35rem; }
     .tc-skill {
-      font-size: .6rem; letter-spacing: .07em; text-transform: uppercase;
-      padding: .22rem .65rem; border-radius: 100px; font-weight: 600;
-    }
-    .tc-a .tc-skill { background: rgba(20,18,30,.1); color: rgba(20,18,30,.65); }
-    .tc-n .tc-skill {
-      background: rgba(200,195,255,.08); color: var(--indigo);
-      border: 1px solid rgba(200,195,255,.2);
+      font-size: .58rem; letter-spacing: .07em; text-transform: uppercase;
+      padding: .2rem .6rem; border-radius: 100px; font-weight: 600;
+      background: rgba(200,195,255,.1); color: var(--indigo);
+      border: 1px solid rgba(200,195,255,.18);
     }
 
     /* ================================================
@@ -1777,7 +1799,13 @@
 
       <!-- Right column: team cards -->
       <div class="team-cards rv">
-        <div class="tc tc-a">
+        <div class="tc tc-a" data-team="alena">
+          <img class="tc-photo" loading="lazy"
+               src="https://pikaso.cdnpk.net/private/production/4518315357/render.jpg?token=exp=1780963200~hmac=fcb452089b3322a614664c3bd168ba597910a73a0dca54271098c7d65ecd1557"
+               alt="Алёна — Дизайнер"
+               onload="this.classList.add('loaded')">
+          <div class="tc-overlay"></div>
+          <div class="tc-hint" data-ru="Смотреть работы →" data-en="View works →">Смотреть работы →</div>
           <div class="tc-initial" aria-hidden="true">А</div>
           <div class="tc-info">
             <div class="tc-name" data-ru="Алёна" data-en="Alena">Алёна</div>
@@ -1790,7 +1818,13 @@
             </div>
           </div>
         </div>
-        <div class="tc tc-n">
+        <div class="tc tc-n" data-team="nikita">
+          <img class="tc-photo" loading="lazy"
+               src="https://pikaso.cdnpk.net/private/production/4518312533/render.png?token=exp=1780963200~hmac=a72b458573acc0364126a4edeefc0a8c18ba2e826fa776fe6419ce9815aa75bc"
+               alt="Никита — AI Креатор"
+               onload="this.classList.add('loaded')">
+          <div class="tc-overlay"></div>
+          <div class="tc-hint" data-ru="Смотреть работы →" data-en="View works →">Смотреть работы →</div>
           <div class="tc-initial" aria-hidden="true">Н</div>
           <div class="tc-info">
             <div class="tc-name" data-ru="Никита" data-en="Nikita">Никита</div>
@@ -2563,6 +2597,50 @@ document.getElementById('mobClose').addEventListener('click', () => {
 function closeMobNav() {
   document.getElementById('mobNav').classList.remove('open');
 }
+
+/* ================================================
+   TEAM CARD CLICK → PORTFOLIO FILTER
+================================================ */
+(function() {
+  document.querySelectorAll('.tc[data-team]').forEach(card => {
+    const team = card.dataset.team;
+
+    /* Cursor: ch-view state with "РАБОТЫ" label */
+    card.addEventListener('mouseenter', () => {
+      document.body.classList.remove('ch-svc','ch-link','ch-drag');
+      document.body.classList.add('ch-view');
+      const lbl = document.getElementById('cur-label');
+      if (lbl) lbl.textContent = activeLang === 'ru' ? 'РАБОТЫ' : 'WORKS';
+    });
+    card.addEventListener('mouseleave', () => {
+      document.body.classList.remove('ch-view');
+      const lbl = document.getElementById('cur-label');
+      if (lbl) lbl.textContent = '';
+    });
+
+    /* Click: set portfolio filter + smooth scroll */
+    card.addEventListener('click', () => {
+      /* 1. Update filter state */
+      activeTeam = team;
+      document.querySelectorAll('.team-btn').forEach(btn => {
+        btn.classList.toggle('on', btn.dataset.filter === team);
+      });
+      /* Reset niche to "all" so user sees all works of this person */
+      activeNiche = 'all';
+      document.querySelectorAll('.niche-btn').forEach(btn => {
+        btn.classList.toggle('on', btn.dataset.niche === 'all');
+      });
+      renderCards();
+
+      /* 2. Scroll to portfolio */
+      const pf = document.getElementById('portfolio');
+      if (!pf) return;
+      const y = pf.getBoundingClientRect().top + window.scrollY;
+      if (window._smoothScrollTo) window._smoothScrollTo(y);
+      else pf.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+})();
 
 /* ================================================
    PRICE CALCULATOR
