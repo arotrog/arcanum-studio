@@ -1392,6 +1392,113 @@
     .pm-body p { margin-bottom: .75rem; }
 
     /* ================================================
+       PORTFOLIO POPUP
+    ================================================ */
+    #pfModal {
+      position: fixed; inset: 0; z-index: 18000;
+      display: flex; align-items: center; justify-content: center;
+      padding: 1rem;
+      opacity: 0; pointer-events: none;
+      transition: opacity .35s var(--ease-out);
+    }
+    #pfModal.open { opacity: 1; pointer-events: auto; }
+    .pfm-backdrop {
+      position: absolute; inset: 0;
+      background: rgba(10,8,20,.88);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    }
+    .pfm-box {
+      position: relative; z-index: 1;
+      display: grid; grid-template-columns: 1fr 1fr;
+      max-width: 900px; width: 100%; max-height: 88vh;
+      border-radius: 1.75rem; overflow: hidden;
+      background: var(--dark-2);
+      border: 1px solid rgba(200,195,255,.1);
+      transform: translateY(24px) scale(.97);
+      transition: transform .38s var(--ease-out);
+      box-shadow: 0 40px 100px rgba(0,0,0,.5);
+    }
+    #pfModal.open .pfm-box { transform: none; }
+
+    /* Image side */
+    .pfm-img-wrap {
+      position: relative; overflow: hidden; min-height: 420px;
+    }
+    .pfm-img {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; opacity: 0; transition: opacity .6s ease;
+    }
+    .pfm-img.loaded { opacity: 1; }
+    .pfm-img-ov {
+      position: absolute; inset: 0;
+      background: linear-gradient(to right, transparent 60%, rgba(14,12,26,.5) 100%);
+    }
+
+    /* Info side */
+    .pfm-info {
+      display: flex; flex-direction: column; justify-content: space-between;
+      padding: 2rem; overflow-y: auto;
+      scrollbar-width: thin; scrollbar-color: rgba(200,195,255,.15) transparent;
+    }
+    .pfm-close {
+      position: absolute; top: 1rem; right: 1rem; z-index: 5;
+      width: 34px; height: 34px; border-radius: 50%;
+      border: 1px solid rgba(200,195,255,.2); background: rgba(14,12,26,.6);
+      backdrop-filter: blur(8px); color: var(--muted);
+      font-size: .9rem; cursor: none;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color .2s, color .2s;
+    }
+    .pfm-close:hover { border-color: var(--oat); color: var(--oat); }
+
+    .pfm-tag {
+      display: inline-block; font-size: .6rem; letter-spacing: .12em;
+      text-transform: uppercase; padding: .22rem .65rem;
+      border-radius: 100px; border: 1px solid rgba(200,195,255,.35);
+      color: var(--indigo); margin-bottom: 1rem; width: fit-content;
+    }
+    .pfm-title {
+      font-family: var(--font-h); font-size: clamp(1.1rem, 2.2vw, 1.5rem);
+      font-weight: 900; line-height: 1.1; color: var(--oat);
+      letter-spacing: -.02em; margin-bottom: .5rem;
+    }
+    .pfm-author {
+      font-size: .78rem; color: var(--indigo-deep); margin-bottom: 1.25rem;
+      letter-spacing: .04em;
+    }
+    .pfm-desc {
+      font-size: .88rem; line-height: 1.75; color: var(--muted); flex: 1;
+    }
+    .pfm-nav {
+      display: flex; gap: .65rem; margin-top: 1.75rem; align-items: center;
+    }
+    .pfm-nav-btn {
+      width: 40px; height: 40px; border-radius: 50%;
+      border: 1px solid rgba(200,195,255,.2); background: transparent;
+      color: var(--indigo); font-size: 1rem; cursor: none;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .2s, border-color .2s, color .2s;
+    }
+    .pfm-nav-btn:hover { background: var(--indigo); border-color: var(--indigo); color: var(--dark-2); }
+    .pfm-counter {
+      font-family: var(--font-h); font-size: .65rem; color: var(--muted);
+      letter-spacing: .1em; margin-left: auto;
+    }
+    .pfm-cta {
+      margin-top: .75rem; padding: .75rem 1.5rem; border-radius: 100px;
+      background: var(--indigo-deep); color: var(--oat);
+      font-family: var(--font-h); font-size: .72rem; font-weight: 700;
+      letter-spacing: .05em; cursor: none; border: none; width: 100%;
+      transition: background .25s, transform .25s;
+    }
+    .pfm-cta:hover { background: var(--indigo); transform: translateY(-2px); }
+
+    @media (max-width: 640px) {
+      .pfm-box { grid-template-columns: 1fr; max-height: 92vh; }
+      .pfm-img-wrap { min-height: 240px; }
+    }
+
+    /* ================================================
        SCROLL REVEAL UTILITY
     ================================================ */
     .rv { opacity: 0; transform: translateY(36px); }
@@ -2038,6 +2145,36 @@
   </div>
 </section>
 
+<!-- ===== PORTFOLIO POPUP ===== -->
+<div id="pfModal" role="dialog" aria-modal="true">
+  <div class="pfm-backdrop" id="pfmBackdrop"></div>
+  <div class="pfm-box">
+    <button class="pfm-close" id="pfmClose">✕</button>
+    <div class="pfm-img-wrap">
+      <img class="pfm-img" id="pfmImg" src="" alt="">
+      <div class="pfm-img-ov"></div>
+    </div>
+    <div class="pfm-info">
+      <div>
+        <div class="pfm-tag" id="pfmTag"></div>
+        <h3 class="pfm-title" id="pfmTitle"></h3>
+        <p class="pfm-author" id="pfmAuthor"></p>
+        <p class="pfm-desc" id="pfmDesc"></p>
+      </div>
+      <div>
+        <div class="pfm-nav">
+          <button class="pfm-nav-btn" id="pfmPrev">←</button>
+          <button class="pfm-nav-btn" id="pfmNext">→</button>
+          <span class="pfm-counter" id="pfmCounter"></span>
+        </div>
+        <button class="pfm-cta" id="pfmCta"
+                data-ru="Обсудить похожий проект →"
+                data-en="Discuss similar project →">Обсудить похожий проект →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ===== CALCULATOR MODAL ===== -->
 <div id="calcModal" role="dialog" aria-modal="true">
   <div class="calc-backdrop" id="calcBackdrop"></div>
@@ -2139,41 +2276,129 @@
 /* ================================================
    PORTFOLIO DATA
 ================================================ */
-/* Generated via Magnific AI — realistic portfolio placeholders */
-const IMG = {
-  neuro:    'https://pikaso.cdnpk.net/private/production/4517969369/render.jpg?token=exp=1780963200~hmac=3cfe00bacb37db7b2ebf9a8c8115f245108dc77607d96e082f37236fe8001fdf',
-  market:   'https://pikaso.cdnpk.net/private/production/4517970790/render.png?token=exp=1780963200~hmac=ec5585281e6799cf5a5fbdff99dd3a9669cff7186cf2a168dbfae841ebed50ba',
-  digital:  'https://pikaso.cdnpk.net/private/production/4517971620/render.png?token=exp=1780963200~hmac=3c3547456f7b9bcff7c9e82b2cb07e9b1d7eea8652de1de06572a73a06a65a07',
-  web:      'https://pikaso.cdnpk.net/private/production/4517971933/render.png?token=exp=1780963200~hmac=61873c4bf5e67e566f264322fb1e964291b81447766dde3c92ca53b517da0f13',
-  brand:    'https://pikaso.cdnpk.net/private/production/4517972591/render.png?token=exp=1780963200~hmac=698088fb70de146582d682b0922761d7233e21f745e3f3453e7994b9c4ceaaa5',
-  neuroArt: 'https://pikaso.cdnpk.net/private/production/4517971848/render.jpg?token=exp=1780963200~hmac=3cc6c3242fc5f9bc1e72eb2c6ad3068bc3355edac67679e31582966ee3d06c97',
+/* Magnific AI — all portfolio images */
+const I = {
+  forest:      'https://pikaso.cdnpk.net/private/production/4518337703/render.jpg?token=exp=1780963200~hmac=0ef4dca210474139523cacc03f94e35a181e179f44ec7545c00cdc9e37e370b2',
+  fashion:     'https://pikaso.cdnpk.net/private/production/4518334018/render.jpg?token=exp=1780963200~hmac=831cb2ae448f1f77c2102c1f9746946dda6a93c1d7c2306fc20c837814660e05',
+  cosmic:      'https://pikaso.cdnpk.net/private/production/4518334835/render.jpg?token=exp=1780963200~hmac=896c047a35816ef4084b8dbbe94d19c670f5c20f6d386b1e76cd0c36ed557575',
+  wedding:     'https://pikaso.cdnpk.net/private/production/4518341540/render.jpg?token=exp=1780963200~hmac=9a803ba68b68d3e107d5ece0c9d8d1239a79a91b0066dbac954d5395194bbdd9',
+  portrait:    'https://pikaso.cdnpk.net/private/production/4517969369/render.jpg?token=exp=1780963200~hmac=3cfe00bacb37db7b2ebf9a8c8115f245108dc77607d96e082f37236fe8001fdf',
+  cosmetics:   'https://pikaso.cdnpk.net/private/production/4518335176/render.jpg?token=exp=1780963200~hmac=6c0533394619350776f5b82aa3283ec48bcab05e33e6e6924e9dae8777ec6e82',
+  electronics: 'https://pikaso.cdnpk.net/private/production/4518338224/render.jpg?token=exp=1780963200~hmac=acf6b4664f01a11f1e0cffc4d93720dc5eb1676a2d9b1bd89b0bec1b464dec2d',
+  clothing:    'https://pikaso.cdnpk.net/private/production/4518335220/render.jpg?token=exp=1780963200~hmac=734b7f568a9cc56832eb1ae745e7d6f81fa2a75360380b16946c143070cf8368',
+  smm:         'https://pikaso.cdnpk.net/private/production/4518341104/render.png?token=exp=1780963200~hmac=8e8bd917bbe0abde2e20e1c586dda0d49c0f0dde46eec72770a471e968a7da91',
+  videoAd:     'https://pikaso.cdnpk.net/private/production/4518342299/render.jpg?token=exp=1780963200~hmac=b1282072d2ccb1279641d97801003036606f2f9a018a4052d19660541c13875f',
+  banners:     'https://pikaso.cdnpk.net/private/production/4517971620/render.png?token=exp=1780963200~hmac=3c3547456f7b9bcff7c9e82b2cb07e9b1d7eea8652de1de06572a73a06a65a07',
+  fitness:     'https://pikaso.cdnpk.net/private/production/4518338601/render.png?token=exp=1780963200~hmac=9c23e2fdea84465be142597c6516359ca86797d459dad173d3a17bec5c9b1483',
+  restaurant:  'https://pikaso.cdnpk.net/private/production/4518337545/render.png?token=exp=1780963200~hmac=80564dc6eb5db7eb8dc4fbda9b946866a184cf4d38e50887c3e91078e26681a9',
+  itWeb:       'https://pikaso.cdnpk.net/private/production/4518340407/render.png?token=exp=1780963200~hmac=721c153c24e479a1b66590a870f66d47bee00a3e92debcb56049624d68d1ded9',
+  cafe:        'https://pikaso.cdnpk.net/private/production/4518341914/render.png?token=exp=1780963200~hmac=09b0b006864d996bf6382b79bc7b5c32b965918021391ace894f6f6214574744',
+  boutique:    'https://pikaso.cdnpk.net/private/production/4518341612/render.png?token=exp=1780963200~hmac=3e2ce6fafad879da15b31979fd4d67bd9f5733801055e82afaf398072dbf48a9',
+  aiLogo:      'https://pikaso.cdnpk.net/private/production/4517972591/render.png?token=exp=1780963200~hmac=698088fb70de146582d682b0922761d7233e21f745e3f3453e7994b9c4ceaaa5',
 };
 
 const PORTFOLIO = [
-  { id:1,  ru:'Лесная магия',              en:'Forest Magic',           niche:'neuro',       author:'alena',  aName:'Алёна',
-    img: IMG.neuro,   bg:'linear-gradient(145deg,#1a0a3d,#0d4a3a)', sim:'linear-gradient(45deg,#1a0a3d,#0d6b4a,#38ef7d)' },
-  { id:2,  ru:'Карточки WB: косметика',    en:'WB Cards: Cosmetics',    niche:'marketplace', author:'alena',  aName:'Алёна',
-    img: IMG.market,  bg:'linear-gradient(145deg,#3a0d20,#8b1a4a)', sim:'linear-gradient(45deg,#f093fb,#f5576c,#fd746c)' },
-  { id:3,  ru:'SMM для бренда одежды',     en:'SMM for Fashion Brand',  niche:'digital',     author:'alena',  aName:'Алёна',
-    img: IMG.digital, bg:'linear-gradient(145deg,#0a1a3d,#0d3a6b)', sim:'linear-gradient(45deg,#4facfe,#00f2fe,#a8ff78)' },
-  { id:4,  ru:'Лендинг фитнес-студии',     en:'Fitness Studio Landing', niche:'web',         author:'alena',  aName:'Алёна',
-    img: IMG.web,     bg:'linear-gradient(145deg,#0a3d1a,#1a6b3a)', sim:'linear-gradient(45deg,#43e97b,#38f9d7,#fa709a)' },
-  { id:5,  ru:'Карточки Ozon: электроника',en:'Ozon: Electronics',      niche:'marketplace', author:'alena',  aName:'Алёна',
-    img: IMG.market,  bg:'linear-gradient(145deg,#0a0d2e,#1a1a5e)', sim:'linear-gradient(45deg,#0f3460,#533483,#e94560)' },
-  { id:6,  ru:'Web для ресторана',          en:'Restaurant Website',    niche:'web',         author:'alena',  aName:'Алёна',
-    img: IMG.web,     bg:'linear-gradient(145deg,#3d1a00,#6b3a0d)', sim:'linear-gradient(45deg,#f7971e,#ffd200,#ff6b6b)' },
-  { id:7,  ru:'AI Фэшн лукбук',            en:'AI Fashion Lookbook',    niche:'neuro',       author:'nikita', aName:'Никита',
-    img: IMG.neuro,   bg:'linear-gradient(145deg,#1a0d3d,#3d1a6b)', sim:'linear-gradient(45deg,#667eea,#764ba2,#f093fb)' },
-  { id:8,  ru:'Нейро-портреты',            en:'Neural Portraits',       niche:'neuro',       author:'nikita', aName:'Никита',
-    img: IMG.neuroArt,bg:'linear-gradient(145deg,#0d0d1e,#1a1040)', sim:'linear-gradient(45deg,#e94560,#533483,#c8c3ff)' },
-  { id:9,  ru:'AI Видео-реклама',          en:'AI Video Ad',            niche:'digital',     author:'nikita', aName:'Никита',
-    img: IMG.digital, bg:'linear-gradient(145deg,#3d1500,#6b2000)', sim:'linear-gradient(45deg,#ff6b6b,#feca57,#ff9ff3)' },
-  { id:10, ru:'AI Брендинг',               en:'AI Branding',            niche:'brand',       author:'nikita', aName:'Никита',
-    img: IMG.brand,   bg:'linear-gradient(145deg,#1a2a3d,#2a3a5e)', sim:'linear-gradient(45deg,#a8edea,#fed6e3,#c8c3ff)' },
-  { id:11, ru:'Нейро-арт для интерьера',   en:'Neural Art for Interior',niche:'neuro',       author:'nikita', aName:'Никита',
-    img: IMG.neuroArt,bg:'linear-gradient(145deg,#0a1a3d,#1a0a6b)', sim:'linear-gradient(45deg,#30cfd0,#330867,#c8c3ff)' },
-  { id:12, ru:'Айдентика бренда',          en:'Brand Identity',         niche:'brand',       author:'alena',  aName:'Алёна',
-    img: IMG.brand,   bg:'linear-gradient(145deg,#1a2e2e,#0d3040)', sim:'linear-gradient(45deg,#2c3e50,#4ca1af,#c8c3ff)' },
+  { id:1,  niche:'neuro',       author:'alena',  aName:'Алёна',
+    ru:'Лесная магия',          en:'Forest Magic',
+    img:I.forest,    bg:'linear-gradient(145deg,#1a0a3d,#0d4a3a)',
+    descRu:'Нейрофотосессия в стиле тёмного фэнтези — клиентка оказывается в зачарованном лесу с мистическим фиолетово-изумрудным светом. Сгенерировано 30 уникальных кадров.',
+    descEn:'AI photo session in dark fantasy style — the client in an enchanted forest with mystical purple-emerald lighting. 30 unique frames generated.' },
+
+  { id:2,  niche:'neuro',       author:'nikita', aName:'Никита',
+    ru:'AI Фэшн лукбук',        en:'AI Fashion Lookbook',
+    img:I.fashion,   bg:'linear-gradient(145deg,#1a0d3d,#3d1a6b)',
+    descRu:'Лукбук для fashion-бренда полностью создан с помощью AI. Атмосфера editorial Vogue, студийное освещение, авангардные образы — без реальной съёмки.',
+    descEn:'Full AI-generated fashion lookbook. Vogue editorial atmosphere, studio lighting, avant-garde looks — no real photoshoot needed.' },
+
+  { id:3,  niche:'neuro',       author:'nikita', aName:'Никита',
+    ru:'Нейро-арт: Космос',     en:'Neural Art: Cosmos',
+    img:I.cosmic,    bg:'linear-gradient(145deg,#0d0d1e,#1a1040)',
+    descRu:'Серия из 8 абстрактных нейро-работ для жилого интерьера. Тема — вселенная и космос в фирменной индиго-палитре. Формат для печати A1.',
+    descEn:'Series of 8 abstract neural artworks for interior design. Universe and cosmos theme in signature indigo palette. Ready for A1 print.' },
+
+  { id:4,  niche:'neuro',       author:'nikita', aName:'Никита',
+    ru:'Нейро-свадьба',         en:'Neural Wedding',
+    img:I.wedding,   bg:'linear-gradient(145deg,#2e1a3d,#1a0d2e)',
+    descRu:'AI-обработка свадебных портретов: романтическая атмосфера, мягкий пастельный свет, эфирное настроение. Пара получила 50 готовых кадров.',
+    descEn:'AI processing of wedding portraits: romantic atmosphere, soft pastel light, ethereal mood. The couple received 50 ready-to-use frames.' },
+
+  { id:5,  niche:'neuro',       author:'alena',  aName:'Алёна',
+    ru:'Нейро-портреты: Бизнес',en:'Neural Business Portraits',
+    img:I.portrait,  bg:'linear-gradient(145deg,#0a1a3d,#1a0a6b)',
+    descRu:'Серия профессиональных AI-портретов для корпоративного использования. Строгий фон, студийное освещение, деловой образ. 5 сотрудников, 10 вариантов каждый.',
+    descEn:'Professional AI portrait series for corporate use. Clean background, studio lighting, business look. 5 employees, 10 variations each.' },
+
+  { id:6,  niche:'marketplace', author:'alena',  aName:'Алёна',
+    ru:'WB: Косметика',         en:'WB: Cosmetics',
+    img:I.cosmetics, bg:'linear-gradient(145deg,#3a0d20,#8b1a4a)',
+    descRu:'Карточки товаров для магазина косметики на Wildberries. Мраморный фон, розово-золотые тона, lifestyle-кадры. Конверсия выросла на 40% после редизайна.',
+    descEn:'Product cards for a cosmetics store on Wildberries. Marble background, rose-gold tones, lifestyle shots. Conversion up 40% after redesign.' },
+
+  { id:7,  niche:'marketplace', author:'alena',  aName:'Алёна',
+    ru:'Ozon: Электроника',     en:'Ozon: Electronics',
+    img:I.electronics,bg:'linear-gradient(145deg,#0a0d2e,#1a1a5e)',
+    descRu:'Продуктовые карточки для категории электроники на Ozon. Тёмный минималистичный стиль для tech-аудитории. Инфографика, A+ контент, 15 SKU.',
+    descEn:'Product cards for the electronics category on Ozon. Dark minimalist style for tech audience. Infographics, A+ content, 15 SKUs.' },
+
+  { id:8,  niche:'marketplace', author:'alena',  aName:'Алёна',
+    ru:'WB: Одежда',            en:'WB: Clothing',
+    img:I.clothing,  bg:'linear-gradient(145deg,#1a0a20,#3a1a40)',
+    descRu:'Карточки одежды для Wildberries с правильным кадрированием, цветокоррекцией и стилизацией под требования маркетплейса. 40 артикулов за 3 дня.',
+    descEn:'Clothing cards for Wildberries with proper framing, color correction and styling to marketplace standards. 40 SKUs completed in 3 days.' },
+
+  { id:9,  niche:'digital',     author:'alena',  aName:'Алёна',
+    ru:'SMM: Fashion бренд',    en:'SMM: Fashion Brand',
+    img:I.smm,       bg:'linear-gradient(145deg,#0a1a3d,#0d3a6b)',
+    descRu:'Контент-план и дизайн постов для fashion-бренда в Instagram и ВКонтакте. Единый визуальный стиль, фиолетово-золотая палитра, 60 шаблонов.',
+    descEn:'Content plan and post design for a fashion brand on Instagram and VK. Unified visual style, purple-gold palette, 60 templates.' },
+
+  { id:10, niche:'digital',     author:'nikita', aName:'Никита',
+    ru:'AI Видео-реклама',      en:'AI Video Ad',
+    img:I.videoAd,   bg:'linear-gradient(145deg,#3d1500,#6b2000)',
+    descRu:'Динамичный рекламный ролик для digital-кампании. Neon-эстетика, AI-анимация, кинематографичный монтаж. Версии 30 и 15 секунд.',
+    descEn:'Dynamic advertising video for a digital campaign. Neon aesthetic, AI animation, cinematic editing. Available in 30 and 15 second cuts.' },
+
+  { id:11, niche:'digital',     author:'alena',  aName:'Алёна',
+    ru:'Баннеры для маркетплейса',en:'Marketplace Banners',
+    img:I.banners,   bg:'linear-gradient(145deg,#1a2e0d,#0d3a1a)',
+    descRu:'Комплект рекламных баннеров для маркетплейса и контекстной рекламы. 12 форматов по требованиям площадок, единая айдентика с карточками товаров.',
+    descEn:'Advertising banner set for marketplace and contextual ads. 12 formats meeting platform requirements, unified identity with product cards.' },
+
+  { id:12, niche:'web',         author:'alena',  aName:'Алёна',
+    ru:'Лендинг: Фитнес',       en:'Landing: Fitness',
+    img:I.fitness,   bg:'linear-gradient(145deg,#0a3d1a,#1a6b3a)',
+    descRu:'Лендинг для фитнес-студии: агрессивный дизайн, тёмная тема с красным акцентом, CTA-ориентированная структура. Конверсия в заявку — 8.3%.',
+    descEn:'Landing page for a fitness studio: aggressive design, dark theme with red accent, CTA-oriented structure. Lead conversion — 8.3%.' },
+
+  { id:13, niche:'web',         author:'alena',  aName:'Алёна',
+    ru:'Сайт: Ресторан',        en:'Website: Restaurant',
+    img:I.restaurant,bg:'linear-gradient(145deg,#3d1a00,#6b3a0d)',
+    descRu:'Элегантный сайт для premium-ресторана: тёмная роскошная тема, крупная фуд-фотография, система онлайн-бронирования, анимированное меню.',
+    descEn:'Elegant website for a premium restaurant: dark luxury theme, large food photography, online reservation system, animated menu.' },
+
+  { id:14, niche:'web',         author:'nikita', aName:'Никита',
+    ru:'Сайт: IT-студия',       en:'Website: IT Studio',
+    img:I.itWeb,     bg:'linear-gradient(145deg,#0a1a3d,#0d2a5e)',
+    descRu:'Корпоративный сайт для IT-студии. Чистый синий градиент, GSAP-анимированные секции, технологичный дизайн. Адаптив для всех устройств.',
+    descEn:'Corporate website for an IT studio. Clean blue gradient, GSAP-animated sections, tech-forward design. Fully responsive for all devices.' },
+
+  { id:15, niche:'brand',       author:'alena',  aName:'Алёна',
+    ru:'Брендинг: Кофейня',     en:'Branding: Coffee Shop',
+    img:I.cafe,      bg:'linear-gradient(145deg,#2e1a00,#4a3010)',
+    descRu:'Полный фирменный стиль для авторской кофейни: логотип, упаковка стаканчиков, меню, визитки, вывеска. Тёплая коричнево-кремовая палитра.',
+    descEn:'Full brand identity for an artisan coffee shop: logo, cup packaging, menu, business cards, signage. Warm brown-cream palette.' },
+
+  { id:16, niche:'brand',       author:'nikita', aName:'Никита',
+    ru:'Айдентика: Бутик',      en:'Identity: Boutique',
+    img:I.boutique,  bg:'linear-gradient(145deg,#1a1a1a,#2a2030)',
+    descRu:'Люкс-айдентика для fashion-бутика: чёрное и золото, тиснение фольгой, элегантный минимализм. Пакеты, ярлыки, упаковочная бумага, карты лояльности.',
+    descEn:'Luxury identity for a fashion boutique: black and gold, foil stamping, elegant minimalism. Bags, tags, wrapping paper, loyalty cards.' },
+
+  { id:17, niche:'brand',       author:'nikita', aName:'Никита',
+    ru:'AI Брендинг стартапа',  en:'AI Startup Branding',
+    img:I.aiLogo,    bg:'linear-gradient(145deg,#1a2a3d,#2a3a5e)',
+    descRu:'Полный брендинг AI-стартапа от нейминга до брендбука. Современная айдентика с технологичным характером. Гайдлайн на 80 страниц.',
+    descEn:'Full branding for an AI startup from naming to brand book. Modern identity with a tech-forward character. 80-page brand guidelines.' },
 ];
 
 const NICHE_LABELS = {
@@ -2597,6 +2822,110 @@ document.getElementById('mobClose').addEventListener('click', () => {
 function closeMobNav() {
   document.getElementById('mobNav').classList.remove('open');
 }
+
+/* ================================================
+   PORTFOLIO POPUP
+================================================ */
+(function() {
+  const modal    = document.getElementById('pfModal');
+  const pfmImg   = document.getElementById('pfmImg');
+  const pfmTag   = document.getElementById('pfmTag');
+  const pfmTitle = document.getElementById('pfmTitle');
+  const pfmAuth  = document.getElementById('pfmAuthor');
+  const pfmDesc  = document.getElementById('pfmDesc');
+  const pfmCtr   = document.getElementById('pfmCounter');
+  const pfmCta   = document.getElementById('pfmCta');
+  if (!modal) return;
+
+  let visibleItems = []; // currently rendered filtered set (without duplicates)
+  let currentIdx   = 0;
+
+  /* Build deduplicated list from rendered track */
+  function getVisible() {
+    const track = document.getElementById('pfTrack');
+    if (!track) return [];
+    const seen = new Set();
+    const result = [];
+    track.querySelectorAll('.pf-card').forEach(card => {
+      const id = +card.dataset.id;
+      if (!seen.has(id)) {
+        seen.add(id);
+        result.push(PORTFOLIO.find(p => p.id === id));
+      }
+    });
+    return result.filter(Boolean);
+  }
+
+  function populate(p) {
+    const lang = activeLang || 'ru';
+    pfmImg.classList.remove('loaded');
+    pfmImg.src = p.img || '';
+    pfmImg.alt = p[lang] || p.ru;
+    pfmImg.onload = () => pfmImg.classList.add('loaded');
+    pfmTag.textContent   = NICHE_LABELS[p.niche]?.[lang] || p.niche;
+    pfmTitle.textContent = lang === 'ru' ? p.ru : p.en;
+    pfmAuth.textContent  = p.aName;
+    pfmDesc.textContent  = lang === 'ru' ? (p.descRu || '') : (p.descEn || '');
+    pfmCta.textContent   = lang === 'ru' ? 'Обсудить похожий проект →' : 'Discuss similar project →';
+    pfmCtr.textContent   = `${currentIdx + 1} / ${visibleItems.length}`;
+  }
+
+  function open(idx) {
+    visibleItems = getVisible();
+    currentIdx   = Math.max(0, Math.min(idx, visibleItems.length - 1));
+    populate(visibleItems[currentIdx]);
+    modal.classList.add('open');
+    document.body.classList.add('modal-open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function close() {
+    modal.classList.remove('open');
+    document.body.classList.remove('modal-open');
+    document.body.style.overflow = '';
+  }
+
+  function nav(dir) {
+    currentIdx = (currentIdx + dir + visibleItems.length) % visibleItems.length;
+    populate(visibleItems[currentIdx]);
+  }
+
+  /* Click on card (event delegation on track) */
+  document.getElementById('pfTrack')?.addEventListener('click', e => {
+    const card = e.target.closest('.pf-card');
+    if (!card) return;
+    const id = +card.dataset.id;
+    visibleItems = getVisible();
+    const idx = visibleItems.findIndex(p => p.id === id);
+    open(idx >= 0 ? idx : 0);
+  });
+
+  /* Controls */
+  document.getElementById('pfmClose')?.addEventListener('click', close);
+  document.getElementById('pfmBackdrop')?.addEventListener('click', close);
+  document.getElementById('pfmPrev')?.addEventListener('click', () => nav(-1));
+  document.getElementById('pfmNext')?.addEventListener('click', () => nav(+1));
+
+  /* CTA → contact */
+  pfmCta?.addEventListener('click', () => {
+    close();
+    setTimeout(() => {
+      const ct = document.getElementById('contact');
+      if (!ct) return;
+      const y = ct.getBoundingClientRect().top + window.scrollY;
+      if (window._smoothScrollTo) window._smoothScrollTo(y);
+      else ct.scrollIntoView({ behavior: 'smooth' });
+    }, 400);
+  });
+
+  /* Keyboard */
+  document.addEventListener('keydown', e => {
+    if (!modal.classList.contains('open')) return;
+    if (e.key === 'Escape')     close();
+    if (e.key === 'ArrowLeft')  nav(-1);
+    if (e.key === 'ArrowRight') nav(+1);
+  });
+})();
 
 /* ================================================
    TEAM CARD CLICK → PORTFOLIO FILTER
