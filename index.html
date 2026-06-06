@@ -1244,6 +1244,202 @@
     .ft-copy { font-size: .72rem; color: var(--muted); }
 
     /* ================================================
+       КОНСТРУКТОР ТЗ — button
+    ================================================ */
+    .tz-open-btn {
+      font-family: var(--font-b); font-size: .65rem; font-weight: 600;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--indigo-deep); cursor: none;
+      background: transparent; border: 1px solid rgba(123,118,211,.35);
+      border-radius: 100px; padding: .28rem .8rem;
+      transition: background .2s, color .2s, border-color .2s;
+      white-space: nowrap;
+    }
+    .tz-open-btn:hover { background: rgba(123,118,211,.12); border-color: var(--indigo-deep); }
+
+    /* ================================================
+       КОНСТРУКТОР ТЗ — modal
+    ================================================ */
+    #tzModal {
+      position: fixed; inset: 0; z-index: 21000;
+      display: flex; align-items: center; justify-content: center; padding: 1rem;
+      opacity: 0; pointer-events: none;
+      transition: opacity .35s var(--ease-out);
+    }
+    #tzModal.open { opacity: 1; pointer-events: auto; }
+    .tz-backdrop {
+      position: absolute; inset: 0;
+      background: rgba(10,8,20,.9);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    }
+    .tz-box {
+      position: relative; z-index: 1;
+      background: var(--dark-2); border: 1px solid rgba(200,195,255,.1);
+      border-radius: 1.75rem; width: 100%; max-width: 680px;
+      max-height: 90vh; display: flex; flex-direction: column;
+      transform: translateY(24px) scale(.97);
+      transition: transform .38s var(--ease-out);
+      box-shadow: 0 40px 100px rgba(0,0,0,.55);
+      overflow: hidden;
+    }
+    #tzModal.open .tz-box { transform: none; }
+
+    /* Progress bar */
+    .tz-progress {
+      display: flex; gap: .35rem; padding: 1.5rem 2rem .25rem;
+      flex-shrink: 0;
+    }
+    .tz-prog-dot {
+      height: 3px; border-radius: 2px; flex: 1;
+      background: rgba(200,195,255,.15);
+      transition: background .35s;
+    }
+    .tz-prog-dot.done { background: var(--indigo-deep); }
+    .tz-prog-dot.active { background: var(--indigo); }
+
+    /* Header */
+    .tz-hdr {
+      padding: .75rem 2rem 1.25rem;
+      border-bottom: 1px solid rgba(200,195,255,.07);
+      flex-shrink: 0;
+    }
+    .tz-step-label {
+      font-size: .6rem; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--indigo-deep); margin-bottom: .35rem;
+    }
+    .tz-step-title {
+      font-family: var(--font-h); font-size: 1.1rem; font-weight: 700;
+      color: var(--oat); line-height: 1.2;
+    }
+    .tz-step-sub { font-size: .8rem; color: var(--muted); margin-top: .2rem; }
+
+    /* Body (scrollable) */
+    .tz-body {
+      flex: 1; overflow-y: auto; padding: 1.5rem 2rem;
+      scrollbar-width: thin; scrollbar-color: rgba(200,195,255,.12) transparent;
+    }
+
+    /* Chips */
+    .tz-chips { display: flex; flex-wrap: wrap; gap: .45rem; }
+    .tz-chip {
+      padding: .48rem 1.05rem; border-radius: 100px;
+      border: 1.5px solid rgba(200,195,255,.18);
+      background: transparent; color: rgba(255,240,225,.55);
+      font-family: var(--font-b); font-size: .8rem; cursor: none;
+      transition: all .22s var(--ease-out); user-select: none;
+      display: flex; align-items: center; gap: .4rem; white-space: nowrap;
+    }
+    .tz-chip:hover { border-color: rgba(200,195,255,.4); color: var(--oat); }
+    .tz-chip.on {
+      background: var(--indigo-deep); border-color: var(--indigo-deep);
+      color: #fff; font-weight: 600;
+    }
+    /* Service cards (step 1) */
+    .tz-svc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; }
+    .tz-svc-card {
+      padding: .9rem 1.1rem; border-radius: 1rem;
+      border: 1.5px solid rgba(200,195,255,.15);
+      background: rgba(200,195,255,.03); cursor: none;
+      transition: all .25s var(--ease-out); text-align: left;
+    }
+    .tz-svc-card:hover { border-color: rgba(200,195,255,.35); background: rgba(200,195,255,.07); }
+    .tz-svc-card.on { border-color: var(--indigo-deep); background: rgba(123,118,211,.15); }
+    .tz-svc-icon { font-size: 1.4rem; margin-bottom: .35rem; display: block; }
+    .tz-svc-name {
+      font-family: var(--font-h); font-size: .78rem; font-weight: 700;
+      color: var(--oat); line-height: 1.2; margin-bottom: .15rem;
+    }
+    .tz-svc-desc { font-size: .67rem; color: var(--muted); line-height: 1.4; }
+
+    /* Field groups */
+    .tz-field { display: flex; flex-direction: column; gap: .35rem; margin-bottom: 1.25rem; }
+    .tz-field:last-child { margin-bottom: 0; }
+    .tz-flabel {
+      font-size: .63rem; letter-spacing: .15em; text-transform: uppercase;
+      color: rgba(200,195,255,.45);
+    }
+    .tz-input, .tz-textarea {
+      background: transparent; border: none;
+      border-bottom: 1px solid rgba(200,195,255,.2);
+      padding: .7rem 0; color: var(--oat);
+      font-family: var(--font-b); font-size: .9rem; outline: none; width: 100%;
+      transition: border-color .25s;
+    }
+    .tz-input::placeholder, .tz-textarea::placeholder { color: rgba(200,195,255,.25); }
+    .tz-input:focus, .tz-textarea:focus { border-color: var(--indigo-deep); }
+    .tz-textarea { resize: none; min-height: 72px; }
+
+    /* Color chips */
+    .tz-colors { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .tz-color {
+      width: 34px; height: 34px; border-radius: 50%;
+      border: 2.5px solid transparent; cursor: none;
+      transition: transform .2s, border-color .2s;
+      position: relative;
+    }
+    .tz-color:hover { transform: scale(1.12); }
+    .tz-color.on { border-color: #fff; }
+    .tz-color.on::after {
+      content: '✓'; position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: .65rem; font-weight: 700;
+      text-shadow: 0 1px 3px rgba(0,0,0,.6);
+    }
+
+    /* Range slider */
+    .tz-range {
+      -webkit-appearance: none; width: 100%; height: 3px;
+      border-radius: 2px; outline: none; cursor: none;
+      background: linear-gradient(to right, var(--indigo-deep) 0%, var(--indigo-deep) 50%, rgba(200,195,255,.2) 50%);
+    }
+    .tz-range::-webkit-slider-thumb {
+      -webkit-appearance: none; width: 16px; height: 16px;
+      border-radius: 50%; background: var(--indigo-deep);
+      border: 2px solid var(--oat); cursor: none;
+      box-shadow: 0 0 8px rgba(123,118,211,.5);
+    }
+    .tz-range-labels { display: flex; justify-content: space-between; margin-top: .4rem; }
+    .tz-range-lbl { font-size: .65rem; color: var(--muted); }
+    .tz-range-val { font-family: var(--font-h); font-size: .85rem; font-weight: 700; color: var(--indigo); margin-top: .3rem; }
+
+    /* Footer nav */
+    .tz-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.1rem 2rem; border-top: 1px solid rgba(200,195,255,.07);
+      flex-shrink: 0; gap: 1rem;
+    }
+    .tz-btn-back {
+      padding: .6rem 1.25rem; border-radius: 100px;
+      border: 1px solid rgba(200,195,255,.18); background: transparent;
+      color: var(--muted); font-family: var(--font-b); font-size: .8rem;
+      cursor: none; transition: border-color .2s, color .2s;
+    }
+    .tz-btn-back:hover { border-color: var(--oat); color: var(--oat); }
+    .tz-btn-back:disabled { opacity: .3; pointer-events: none; }
+    .tz-btn-next {
+      padding: .65rem 1.75rem; border-radius: 100px;
+      background: var(--indigo-deep); color: #fff;
+      font-family: var(--font-h); font-size: .78rem; font-weight: 700;
+      letter-spacing: .05em; cursor: none; border: none;
+      transition: background .25s, transform .25s;
+    }
+    .tz-btn-next:hover { background: var(--indigo); transform: translateY(-2px); }
+    .tz-close {
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 1px solid rgba(200,195,255,.18); background: transparent;
+      color: var(--muted); font-size: .85rem; cursor: none;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color .2s, color .2s; position: absolute;
+      top: 1.25rem; right: 1.25rem;
+    }
+    .tz-close:hover { border-color: var(--oat); color: var(--oat); }
+
+    @media (max-width: 600px) {
+      .tz-svc-grid { grid-template-columns: 1fr; }
+      .tz-hdr, .tz-body, .tz-footer, .tz-progress { padding-left: 1.25rem; padding-right: 1.25rem; }
+    }
+
+    /* ================================================
        PRIVACY POLICY CHECKBOX
     ================================================ */
     .fg-policy {
@@ -2116,7 +2312,11 @@
                data-en-ph="+X (___) ___-__-__">
       </div>
       <div class="fg">
-        <label class="fl" data-ru="Опишите задачу" data-en="Describe your task">Опишите задачу</label>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.4rem">
+          <label class="fl" data-ru="Опишите задачу" data-en="Describe your task">Опишите задачу</label>
+          <button type="button" class="tz-open-btn" id="openTZ"
+                  data-ru="✦ Конструктор ТЗ" data-en="✦ Brief Builder">✦ Конструктор ТЗ</button>
+        </div>
         <textarea class="fta" name="message" required
                   placeholder="Расскажите о вашем проекте..."
                   data-ru-ph="Расскажите о вашем проекте..."
@@ -2171,6 +2371,25 @@
                 data-ru="Обсудить похожий проект →"
                 data-en="Discuss similar project →">Обсудить похожий проект →</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== КОНСТРУКТОР ТЗ ===== -->
+<div id="tzModal" role="dialog" aria-modal="true" aria-label="Конструктор ТЗ">
+  <div class="tz-backdrop" id="tzBackdrop"></div>
+  <div class="tz-box">
+    <button class="tz-close" id="tzClose">✕</button>
+    <div class="tz-progress" id="tzProgress"></div>
+    <div class="tz-hdr">
+      <div class="tz-step-label" id="tzStepLabel">Шаг 1 из 5</div>
+      <div class="tz-step-title" id="tzStepTitle">Тип задачи</div>
+      <div class="tz-step-sub" id="tzStepSub">Что нужно сделать?</div>
+    </div>
+    <div class="tz-body" id="tzBody"></div>
+    <div class="tz-footer">
+      <button class="tz-btn-back" id="tzBack">← Назад</button>
+      <button class="tz-btn-next" id="tzNext">Далее →</button>
     </div>
   </div>
 </div>
@@ -2822,6 +3041,467 @@ document.getElementById('mobClose').addEventListener('click', () => {
 function closeMobNav() {
   document.getElementById('mobNav').classList.remove('open');
 }
+
+/* ================================================
+   КОНСТРУКТОР ТЗ
+================================================ */
+(function() {
+  const modal    = document.getElementById('tzModal');
+  const body     = document.getElementById('tzBody');
+  const nextBtn  = document.getElementById('tzNext');
+  const backBtn  = document.getElementById('tzBack');
+  const progEl   = document.getElementById('tzProgress');
+  const titleEl  = document.getElementById('tzStepTitle');
+  const subEl    = document.getElementById('tzStepSub');
+  const labelEl  = document.getElementById('tzStepLabel');
+  if (!modal) return;
+
+  const TOTAL = 5;
+  let step = 0;
+  const data = {
+    service: null, brand: '', about: '', audience: [],
+    styles: [], colors: [], refs: '',
+    niche: {}, deadline: '7-14', budget: 20000, extra: ''
+  };
+
+  /* ── Service definitions ── */
+  const SERVICES = [
+    { id:'neuro',       icon:'🤖', name:'Нейрофотосессии',         desc:'AI-портреты, лукбуки, арт для интерьера' },
+    { id:'marketplace', icon:'🛒', name:'Карточки маркетплейсов',   desc:'WB, Ozon, инфографика, A+ контент' },
+    { id:'web',         icon:'💻', name:'Web дизайн',               desc:'Лендинги, корпоративные сайты, интернет-магазины' },
+    { id:'digital',     icon:'📱', name:'Digital дизайн',           desc:'SMM, баннеры, презентации, брендбуки' },
+    { id:'video',       icon:'🎬', name:'AI Контент и видео',       desc:'Видео-реклама, анимации, Shorts' },
+    { id:'brand',       icon:'✨', name:'Брендинг и айдентика',     desc:'Логотип, фирменный стиль, брендбук' },
+  ];
+
+  /* ── Niche questions ── */
+  const NICHE_STEPS = {
+    neuro: {
+      title: 'Детали нейрофотосессии',
+      sub: 'Расскажите подробнее о съёмке',
+      fields: [
+        { id:'chars',  label:'Количество персонажей', type:'chips', single:true,
+          opts:['1 персонаж','2–3 персонажа','4 и более'] },
+        { id:'looks',  label:'Образов на персонажа',  type:'chips', single:true,
+          opts:['3 образа','5 образов','10 образов','20+ образов'] },
+        { id:'mood',   label:'Настроение / атмосфера',type:'chips', single:false,
+          opts:['Романтичное','Деловое','Фэнтези','Арт-хаус','Тёмное','Лёгкое и нежное','Дерзкое'] },
+        { id:'location',label:'Локация (AI фон)',     type:'chips', single:false,
+          opts:['Студия','Природа / лес','Городской','Фантастика','Интерьер','Космос'] },
+        { id:'refs',   label:'Референсы (ссылки или описание)', type:'text',
+          placeholder:'Вставьте ссылки на примеры или опишите образ словами...' },
+      ]
+    },
+    marketplace: {
+      title: 'Детали карточек',
+      sub: 'Расскажите о товаре и платформе',
+      fields: [
+        { id:'platform', label:'Платформа',            type:'chips', single:false,
+          opts:['Wildberries','Ozon','Яндекс Маркет','Авито'] },
+        { id:'category', label:'Категория товара',     type:'text',
+          placeholder:'Например: косметика, электроника, одежда...' },
+        { id:'skuCount', label:'Количество артикулов', type:'chips', single:true,
+          opts:['1–3','4–10','11–20','21+'] },
+        { id:'extras',   label:'Дополнительно',        type:'chips', single:false,
+          opts:['Инфографика','A+ / Rich-контент','Видеообложка','Lifestyle-фото'] },
+        { id:'style',    label:'Стиль карточек',       type:'chips', single:true,
+          opts:['Минималистичный','Яркий / Bold','Премиум','Lifestyle'] },
+      ]
+    },
+    web: {
+      title: 'Детали сайта',
+      sub: 'Расскажите о проекте подробнее',
+      fields: [
+        { id:'siteType', label:'Тип сайта',              type:'chips', single:true,
+          opts:['Лендинг','Корпоративный','Интернет-магазин','Портфолио','SaaS / Сервис'] },
+        { id:'pages',    label:'Примерное кол-во страниц',type:'chips', single:true,
+          opts:['1–3','4–7','8–15','15+'] },
+        { id:'func',     label:'Функционал',             type:'chips', single:false,
+          opts:['Форма заявки','Онлайн оплата','Каталог / Фильтры','Кабинет пользователя','Многоязычность','Блог'] },
+        { id:'cms',      label:'Предпочтения по CMS',    type:'chips', single:true,
+          opts:['Без CMS','Tilda','WordPress','Webflow','Любой'] },
+        { id:'refs',     label:'Сайты, которые нравятся',type:'text',
+          placeholder:'Ссылки на референсы...'},
+      ]
+    },
+    digital: {
+      title: 'Детали digital-дизайна',
+      sub: 'Уточните тип и объём',
+      fields: [
+        { id:'dtype',    label:'Тип контента',          type:'chips', single:false,
+          opts:['Посты для соцсетей','Stories / Reels','Баннеры','Презентация','Email-рассылка','Брендбук / Гайдлайн'] },
+        { id:'platform', label:'Платформы',             type:'chips', single:false,
+          opts:['Instagram','ВКонтакте','Telegram','YouTube','TikTok','Сайт'] },
+        { id:'count',    label:'Количество единиц',     type:'chips', single:true,
+          opts:['1–5','6–15','16–30','30+'] },
+        { id:'anim',     label:'Анимация',              type:'chips', single:true,
+          opts:['Без анимации','Базовая','Полная анимация'] },
+        { id:'refs',     label:'Референсы',             type:'text',
+          placeholder:'Ссылки на примеры, которые нравятся...' },
+      ]
+    },
+    video: {
+      title: 'Детали видео / контента',
+      sub: 'Расскажите о формате',
+      fields: [
+        { id:'vtype',    label:'Тип контента',          type:'chips', single:false,
+          opts:['AI Фото','Анимация','Видео-ролик','Short / Reels','Слайд-шоу'] },
+        { id:'duration', label:'Длительность (для видео)',type:'chips', single:true,
+          opts:['15 секунд','30 секунд','60 секунд','2–3 минуты'] },
+        { id:'vstyle',   label:'Стиль',                 type:'chips', single:false,
+          opts:['Реалистичный','Кинематографичный','Аниме / Иллюстрация','3D','Neon / Cyber','Натуральный'] },
+        { id:'voice',    label:'Озвучка / музыка',      type:'chips', single:true,
+          opts:['Не нужна','Музыкальный фон','Голосовая озвучка','Полный звук'] },
+        { id:'platform', label:'Площадки публикации',   type:'chips', single:false,
+          opts:['Instagram / TikTok','YouTube','ВКонтакте','Сайт','TV / Билборд'] },
+      ]
+    },
+    brand: {
+      title: 'Детали брендинга',
+      sub: 'Расскажите о масштабе задачи',
+      fields: [
+        { id:'pkg',      label:'Пакет услуг',           type:'chips', single:true,
+          opts:['Только логотип','Логотип + фирменный стиль','Полный брендбук','Ребрендинг'] },
+        { id:'carriers', label:'Носители',              type:'chips', single:false,
+          opts:['Визитки','Упаковка / Этикетка','Меню','Шаблоны соцсетей','Документация','Сувенирная продукция','Вывеска'] },
+        { id:'char',     label:'Характер бренда',       type:'chips', single:false,
+          opts:['Строгий / Деловой','Игривый / Яркий','Роскошный / Премиум','Экологичный','Технологичный','Уютный / Тёплый'] },
+        { id:'refs',     label:'Бренды / Логотипы, которые нравятся', type:'text',
+          placeholder:'Ссылки или названия...' },
+      ]
+    },
+  };
+
+  const STEPS = [
+    { title:'Тип задачи',         sub:'Выберите одну или несколько услуг' },
+    { title:'О проекте',          sub:'Расскажите о вашем бренде и аудитории' },
+    { title:'Стиль и визуал',     sub:'Помогите нам понять ваш эстетический вектор' },
+    { title:'Детали',             sub:'Нишевые параметры вашей задачи' },
+    { title:'Сроки и бюджет',     sub:'Финальные условия проекта' },
+  ];
+
+  /* ── Open / Close ── */
+  document.getElementById('openTZ')?.addEventListener('click', () => {
+    step = 0;
+    renderStep();
+    modal.classList.add('open');
+    document.body.classList.add('modal-open');
+    document.body.style.overflow = 'hidden';
+  });
+
+  function closeTZ() {
+    modal.classList.remove('open');
+    document.body.classList.remove('modal-open');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('tzClose')?.addEventListener('click', closeTZ);
+  document.getElementById('tzBackdrop')?.addEventListener('click', closeTZ);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeTZ();
+  });
+
+  /* ── Progress ── */
+  function updateProgress() {
+    progEl.innerHTML = Array.from({length:TOTAL}, (_,i) => `
+      <div class="tz-prog-dot ${i < step ? 'done' : i === step ? 'active' : ''}"></div>`).join('');
+    labelEl.textContent = `Шаг ${step+1} из ${TOTAL}`;
+    titleEl.textContent = STEPS[step].title;
+    subEl.textContent   = STEPS[step].sub;
+    backBtn.disabled    = step === 0;
+    nextBtn.textContent = step === TOTAL-1 ? '✓ Заполнить форму' : 'Далее →';
+  }
+
+  /* ── Chip helper ── */
+  function chipsHTML(fieldId, opts, single, value) {
+    return opts.map(o => {
+      const sel = Array.isArray(value) ? value.includes(o) : value === o;
+      return `<button type="button" class="tz-chip ${sel ? 'on' : ''}"
+        data-field="${fieldId}" data-single="${single}" data-val="${o}">${o}</button>`;
+    }).join('');
+  }
+
+  /* ── Render step ── */
+  function renderStep() {
+    updateProgress();
+    body.innerHTML = '';
+    body.scrollTop = 0;
+
+    if (step === 0) renderStep0();
+    else if (step === 1) renderStep1();
+    else if (step === 2) renderStep2();
+    else if (step === 3) renderStep3();
+    else if (step === 4) renderStep4();
+
+    bindChips();
+  }
+
+  function renderStep0() {
+    body.innerHTML = `<div class="tz-svc-grid">
+      ${SERVICES.map(s => `
+        <button type="button" class="tz-svc-card ${data.service === s.id ? 'on' : ''}"
+          data-svc="${s.id}">
+          <span class="tz-svc-icon">${s.icon}</span>
+          <div class="tz-svc-name">${s.name}</div>
+          <div class="tz-svc-desc">${s.desc}</div>
+        </button>`).join('')}
+    </div>`;
+    body.querySelectorAll('.tz-svc-card').forEach(btn => {
+      btn.addEventListener('click', () => {
+        body.querySelectorAll('.tz-svc-card').forEach(b => b.classList.remove('on'));
+        btn.classList.add('on');
+        data.service = btn.dataset.svc;
+        /* Update niche step title */
+        if (NICHE_STEPS[data.service]) {
+          STEPS[3].title = NICHE_STEPS[data.service].title;
+          STEPS[3].sub   = NICHE_STEPS[data.service].sub;
+        }
+      });
+    });
+  }
+
+  function renderStep1() {
+    body.innerHTML = `
+      <div class="tz-field">
+        <label class="tz-flabel">Название бренда / проекта</label>
+        <input class="tz-input" id="tzBrand" type="text" placeholder="Ваш бренд..." value="${data.brand}">
+      </div>
+      <div class="tz-field">
+        <label class="tz-flabel">Коротко о бизнесе</label>
+        <textarea class="tz-textarea" id="tzAbout" placeholder="Чем вы занимаетесь, в чём особенность...">${data.about}</textarea>
+      </div>
+      <div class="tz-field">
+        <label class="tz-flabel">Целевая аудитория</label>
+        <div class="tz-chips" style="margin-bottom:.65rem">
+          ${chipsHTML('audience', ['18–24','25–34','35–44','45+'], false, data.audience)}
+          ${chipsHTML('audience', ['Мужчины','Женщины','Все'], false, data.audience)}
+          ${chipsHTML('audience', ['Премиум','Средний класс','Масс-маркет'], false, data.audience)}
+          ${chipsHTML('audience', ['B2B','B2C'], false, data.audience)}
+        </div>
+      </div>`;
+    body.querySelector('#tzBrand').addEventListener('input', e => data.brand = e.target.value);
+    body.querySelector('#tzAbout').addEventListener('input', e => data.about = e.target.value);
+  }
+
+  function renderStep2() {
+    const STYLE_OPTS = ['Минимализм','Люкс / Роскошь','Яркий / Bold','Технологичный','Натуральный / Эко','Ретро / Vintage','Авангард','Уют / Домашний'];
+    const COLORS = [
+      { name:'Чёрный',    hex:'#14121E' },{ name:'Белый',     hex:'#F5F5F5' },
+      { name:'Индиго',    hex:'#7B76D3' },{ name:'Сиреневый', hex:'#C8C3FF' },
+      { name:'Коралл',    hex:'#FF6B6B' },{ name:'Золото',    hex:'#FFD200' },
+      { name:'Изумруд',   hex:'#2ECC71' },{ name:'Синий',     hex:'#3498DB' },
+      { name:'Розовый',   hex:'#FF9FF3' },{ name:'Терракота', hex:'#E07A5F' },
+      { name:'Бежевый',   hex:'#FFF0E1' },{ name:'Антрацит',  hex:'#3D3B4A' },
+    ];
+    body.innerHTML = `
+      <div class="tz-field">
+        <label class="tz-flabel">Визуальный стиль</label>
+        <div class="tz-chips">${chipsHTML('styles', STYLE_OPTS, false, data.styles)}</div>
+      </div>
+      <div class="tz-field" style="margin-top:1.25rem">
+        <label class="tz-flabel">Цветовые предпочтения</label>
+        <div class="tz-colors">${COLORS.map(c => `
+          <button type="button" class="tz-color ${data.colors.includes(c.name)?'on':''}"
+            style="background:${c.hex}" title="${c.name}"
+            data-field="colors" data-single="false" data-val="${c.name}"></button>`).join('')}
+        </div>
+        <div style="margin-top:.5rem;font-size:.7rem;color:var(--muted)">Выберите 1–4 цвета</div>
+      </div>
+      <div class="tz-field" style="margin-top:1.25rem">
+        <label class="tz-flabel">Что НЕ нравится / чего избегать</label>
+        <input class="tz-input" id="tzDislikes" type="text"
+          placeholder="Например: не хочу красный, не нравится агрессивный дизайн..."
+          value="${data.dislikes||''}">
+      </div>`;
+    body.querySelector('#tzDislikes')?.addEventListener('input', e => data.dislikes = e.target.value);
+    /* color chip binding */
+    body.querySelectorAll('.tz-color').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const val = btn.dataset.val;
+        const idx = data.colors.indexOf(val);
+        if (idx >= 0) { data.colors.splice(idx,1); btn.classList.remove('on'); }
+        else if (data.colors.length < 4) { data.colors.push(val); btn.classList.add('on'); }
+      });
+    });
+  }
+
+  function renderStep3() {
+    const svc = NICHE_STEPS[data.service];
+    if (!svc) {
+      body.innerHTML = `<p style="color:var(--muted);font-size:.9rem">Выберите тип услуги на шаге 1, чтобы увидеть нишевые вопросы.</p>`;
+      return;
+    }
+    if (!data.niche[data.service]) data.niche[data.service] = {};
+    const nd = data.niche[data.service];
+
+    body.innerHTML = svc.fields.map(f => {
+      if (f.type === 'chips') return `
+        <div class="tz-field">
+          <label class="tz-flabel">${f.label}</label>
+          <div class="tz-chips">${chipsHTML(`niche_${f.id}`, f.opts, f.single, nd[f.id] || (f.single ? '' : []))}</div>
+        </div>`;
+      if (f.type === 'text') return `
+        <div class="tz-field">
+          <label class="tz-flabel">${f.label}</label>
+          <input class="tz-input" id="nf_${f.id}" type="text" placeholder="${f.placeholder||''}" value="${nd[f.id]||''}">
+        </div>`;
+      return '';
+    }).join('');
+
+    /* bind text inputs */
+    svc.fields.filter(f => f.type === 'text').forEach(f => {
+      body.querySelector(`#nf_${f.id}`)?.addEventListener('input', e => {
+        data.niche[data.service][f.id] = e.target.value;
+      });
+    });
+  }
+
+  const BUDGETS = [5000,10000,15000,20000,30000,50000,80000,100000,150000];
+  function renderStep4() {
+    const bidx = BUDGETS.indexOf(data.budget) >= 0 ? BUDGETS.indexOf(data.budget) : 3;
+    body.innerHTML = `
+      <div class="tz-field">
+        <label class="tz-flabel">Срок выполнения</label>
+        <div class="tz-chips">
+          ${chipsHTML('deadline',['Стандарт (7–14 дней)','Срочно (3–5 дней)','Очень срочно (24–48 часов)'],true,data.deadline)}
+        </div>
+      </div>
+      <div class="tz-field" style="margin-top:1.25rem">
+        <label class="tz-flabel">Бюджет</label>
+        <div class="tz-range-val" id="tzBudgetVal">от ${data.budget.toLocaleString('ru-RU')} ₽</div>
+        <input type="range" class="tz-range" id="tzBudgetRange"
+          min="0" max="${BUDGETS.length-1}" step="1" value="${bidx}">
+        <div class="tz-range-labels">
+          <span class="tz-range-lbl">5 000 ₽</span>
+          <span class="tz-range-lbl">150 000+ ₽</span>
+        </div>
+      </div>
+      <div class="tz-field" style="margin-top:1.25rem">
+        <label class="tz-flabel">Дополнительные пожелания</label>
+        <textarea class="tz-textarea" id="tzExtra"
+          placeholder="Всё, что важно знать команде: сроки показа, особые требования, важные детали...">${data.extra}</textarea>
+      </div>`;
+
+    const rangeEl  = body.querySelector('#tzBudgetRange');
+    const rangeVal = body.querySelector('#tzBudgetVal');
+    function updateRange(idx) {
+      const v = BUDGETS[+idx];
+      data.budget = v;
+      rangeVal.textContent = `от ${v.toLocaleString('ru-RU')} ₽`;
+      const pct = (+idx / (BUDGETS.length-1)) * 100;
+      rangeEl.style.background = `linear-gradient(to right, var(--indigo-deep) ${pct}%, rgba(200,195,255,.2) ${pct}%)`;
+    }
+    rangeEl.addEventListener('input', e => updateRange(e.target.value));
+    updateRange(bidx);
+
+    body.querySelector('#tzExtra')?.addEventListener('input', e => data.extra = e.target.value);
+  }
+
+  /* ── Chip binding ── */
+  function bindChips() {
+    body.querySelectorAll('.tz-chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const field  = btn.dataset.field;
+        const val    = btn.dataset.val;
+        const single = btn.dataset.single === 'true';
+        const isNiche = field.startsWith('niche_');
+        const key    = isNiche ? field.replace('niche_','') : field;
+
+        if (isNiche) {
+          if (!data.niche[data.service]) data.niche[data.service] = {};
+          const nd = data.niche[data.service];
+          if (single) {
+            nd[key] = val;
+            body.querySelectorAll(`.tz-chip[data-field="${field}"]`).forEach(b => b.classList.remove('on'));
+            btn.classList.add('on');
+          } else {
+            const arr = nd[key] || [];
+            const idx = arr.indexOf(val);
+            if (idx >= 0) { arr.splice(idx,1); btn.classList.remove('on'); }
+            else { arr.push(val); btn.classList.add('on'); }
+            nd[key] = arr;
+          }
+        } else {
+          if (single) {
+            data[field] = val;
+            body.querySelectorAll(`.tz-chip[data-field="${field}"]`).forEach(b => b.classList.remove('on'));
+            btn.classList.add('on');
+          } else {
+            const arr = Array.isArray(data[field]) ? data[field] : [];
+            const idx = arr.indexOf(val);
+            if (idx >= 0) { arr.splice(idx,1); btn.classList.remove('on'); }
+            else { arr.push(val); btn.classList.add('on'); }
+            data[field] = arr;
+          }
+        }
+      });
+    });
+  }
+
+  /* ── Nav ── */
+  nextBtn.addEventListener('click', () => {
+    if (step === 0 && !data.service) {
+      nextBtn.style.animation = 'none';
+      nextBtn.style.transform = 'translateX(4px)';
+      setTimeout(() => { nextBtn.style.transform = ''; }, 200);
+      return;
+    }
+    if (step < TOTAL-1) { step++; renderStep(); }
+    else finalize();
+  });
+  backBtn.addEventListener('click', () => {
+    if (step > 0) { step--; renderStep(); }
+  });
+
+  /* ── Generate TZ text ── */
+  function finalize() {
+    const svcName  = SERVICES.find(s => s.id === data.service)?.name || '—';
+    const svcData  = data.niche[data.service] || {};
+    const nd       = NICHE_STEPS[data.service];
+    const lines    = [];
+
+    lines.push('📋 ТЕХНИЧЕСКОЕ ЗАДАНИЕ — Арканум\n');
+    lines.push(`🎯 Задача: ${svcName}`);
+    if (data.brand)    lines.push(`🏷 Бренд / Проект: ${data.brand}`);
+    if (data.about)    lines.push(`📝 О бизнесе: ${data.about}`);
+    if (data.audience?.length) lines.push(`👥 Целевая аудитория: ${data.audience.join(', ')}`);
+
+    lines.push('');
+    if (data.styles?.length)   lines.push(`🎨 Стиль: ${data.styles.join(', ')}`);
+    if (data.colors?.length)   lines.push(`🎨 Цвета: ${data.colors.join(', ')}`);
+    if (data.dislikes)         lines.push(`🚫 Избегать: ${data.dislikes}`);
+
+    if (nd) {
+      lines.push(`\n📐 Детали (${nd.title}):`);
+      nd.fields.forEach(f => {
+        const v = svcData[f.id];
+        if (!v || (Array.isArray(v) && !v.length)) return;
+        const vStr = Array.isArray(v) ? v.join(', ') : v;
+        lines.push(`• ${f.label}: ${vStr}`);
+      });
+    }
+
+    lines.push('');
+    lines.push(`⏰ Срок: ${data.deadline || 'Стандарт (7–14 дней)'}`);
+    lines.push(`💰 Бюджет: от ${data.budget.toLocaleString('ru-RU')} ₽`);
+    if (data.extra) lines.push(`\n💬 Доп. пожелания: ${data.extra}`);
+
+    const txt = lines.join('\n');
+    const ta  = document.querySelector('.ct-form .fta');
+    if (ta) { ta.value = txt; ta.dispatchEvent(new Event('input')); }
+
+    closeTZ();
+    /* Scroll to contact */
+    setTimeout(() => {
+      const ct = document.getElementById('contact');
+      if (ct) {
+        const y = ct.getBoundingClientRect().top + window.scrollY;
+        if (window._smoothScrollTo) window._smoothScrollTo(y);
+        else ct.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 350);
+  }
+
+})();
 
 /* ================================================
    PORTFOLIO POPUP
